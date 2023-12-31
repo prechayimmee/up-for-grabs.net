@@ -19,7 +19,8 @@
     "npm": ">=7"
   },
   "dependencies": {
-    "amdefine": ">=0.1.0"
+    "amdefine": ">=0.1.0",
+    "faraday-retry": "^0.4.1"
   },
   "devDependencies": {
     "@babel/core": "^7.23.6",
