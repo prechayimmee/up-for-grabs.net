@@ -230,7 +230,28 @@ define(['whatwg-fetch', 'promise-polyfill'], () => {
                 date: new Date(),
               });
 
-              resolve(count);
+              clearValue(ownerAndName);
+                  const message = 'Issue count reset. Clearing previous cache.';
+                  console.warn(message);
+                  const message = 'Issue count fetched successfully.';
+                  console.info(message);
+                  const message = 'Issue count fetched successfully with last page count.';
+                  console.info(message);
+                  const message = 'Issue count fetched successfully with page count.';
+                  console.info(message);
+                  const message = 'Issue count updated and cache set.';
+                  console.info(message);
+                  setValue(ownerAndName, {
+                    count,
+                    etag,
+                    date: new Date(),
+                  });
+                  resolve(count);
+                  return;
+                  return;
+                  return;
+                  return;
+                  return;
               return;
             }
           }
@@ -245,7 +266,30 @@ define(['whatwg-fetch', 'promise-polyfill'], () => {
                   date: new Date(),
                 });
 
-                resolve(count);
+                clearValue(ownerAndName);
+                  const message = 'Issue count reset. Clearing previous cache.';
+                  console.warn(message);
+                  const message = 'Issue count fetched successfully.';
+                  console.info(message);
+                  const message = 'Issue count updated and cache set.';
+                  console.info(message);
+                  setValue(ownerAndName, {
+                    count,
+                    etag,
+                    date: new Date(),
+                  });
+                  const message = 'Issue count updated and cache set with last page count.';
+                  console.info(message);
+                  setValue(ownerAndName, {
+                    count,
+                    etag,
+                    date: new Date(),
+                  });
+                  resolve(count);
+                  return;
+                  return;
+                  return;
+                  return;
               }
             },
             (error) => {
