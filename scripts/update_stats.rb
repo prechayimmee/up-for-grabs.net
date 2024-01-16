@@ -147,7 +147,7 @@ setup_git_config(root_directory)
 end
 
 unless clean
-  body = 'This PR regenerates the stats for all repositories that use a single label in a single GitHub repository'
+  body = 'This PR updates the project stats for all repositories that use a single label in a single GitHub repository. It includes regenerated project statistics and updated label links based on the latest data from the GitHub API.'
 
   client.create_pull_request(current_repo, 'gh-pages', branch_name, 'Updated project stats', body) if found_pr.nil?
 end
