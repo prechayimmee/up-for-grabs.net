@@ -1,3 +1,27 @@
+# Add Linting and Prettier
+
+## Running Lint and Prettier Scripts
+
+To run the lint script, use the following command:
+```bash
+npm run lint
+```
+
+To fix linting issues, use the following command:
+```bash
+npm run lint-fix
+```
+
+To check if the code adheres to the prettier rules, use the following command:
+```bash
+npm run prettier
+```
+
+To fix prettier styling issues, use the following command:
+```bash
+npm run prettier-fix
+```
+
 # List a Project
 
 This document outlines the process of submitting a project to be listed on Up
