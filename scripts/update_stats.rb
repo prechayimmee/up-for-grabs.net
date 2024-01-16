@@ -58,7 +58,10 @@ def update(project, apply_changes: false)
     return
   end
 
-  obj.store('upforgrabs', 'name' => label, 'link' => url) if link_needs_rewriting
+  if needs_link_rewriting
+  obj.store('upforgrabs', 'name' => label, 'link' => url)
+  obj.store('stats', 'issue-count' => result[:count], 'fork-count' => result[:fork_count])
+end
 
   if result[:last_updated].nil?
     obj.store('stats',
