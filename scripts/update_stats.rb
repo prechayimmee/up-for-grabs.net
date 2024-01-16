@@ -85,9 +85,9 @@ token = ENV['GITHUB_TOKEN'] || raise('GITHUB_TOKEN environment variable is missi
 client = Octokit::Client.new(access_token: token)
 prs = client.pulls current_repo
 
-found_pr = prs.find { |pr| pr.title == 'Updated project stats' && pr.user.login == 'shiftbot' }
+existing_pull_request = find_existing_pull_request(prs)
 
-if found_pr
+if existing_pull_request
   warn "There is a current PR open to update stats ##{found_pr.number} - review and merge that before we go again"
   exit 0
 end
