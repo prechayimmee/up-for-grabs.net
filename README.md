@@ -55,8 +55,11 @@ Thanks to these wonderful people who have improved the code and documentation to
       <td align="center"><a href="https://github.com/jalaniz1"><img src="https://avatars.githubusercontent.com/u/1664815?v=4?s=100" width="100px;" alt="James Alaniz"/><br /><sub><b>James Alaniz</b></sub></a><br /><a href="https://github.com/up-for-grabs/up-for-grabs.net/commits?author=jalaniz1" title="Code">💻</a></td>
     </tr>
     <tr>
-      <td align="center"><a href="https://github.com/gewarren"><img src="https://avatars.githubusercontent.com/u/24882762?v=4?s=100" width="100px;" alt="Genevieve Warren"/><br /><sub><b>Genevieve Warren</b></sub></a><br /><a href="https://github.com/up-for-grabs/up-for-grabs.net/commits?author=gewarren" title="Documentation">📖</a></td>
-      <td align="center"><a href="https://github.com/SaadAnsari17"><img src="https://avatars.githubusercontent.com/u/94478736?v=4?s=100" width="100px;" alt="Saad"/><br /><sub><b>Saad</b></sub></a><br /><a href="https://github.com/up-for-grabs/up-for-grabs.net/commits?author=SaadAnsari17" title="Code">💻</a></td>
+      <td align="center"><a href="https://github.com/AstroBoogie"><img src="https://avatars2.githubusercontent.com/u/18710598?v=4?s=100" width="100px; ;" alt="Nathaniel Adams"/><br /><sub><b>Nathaniel Adams</b></sub></a><br /><a href="https://github.com/up-for-grabs/up-for-grabs.net/commits?author=AstroBoogie" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center"><a href="http://ishan.co"><img src="https://avatars0.githubusercontent.com/u/1873271?v=4?s=100" width="100px;" alt="Ishan Sharma"/><br /><sub><b>Ishan Sharma</b></sub></a><br /><a href="https://github.com/up-for-grabs/up-for-grabs.net/commits?author=ishansharma" title="Code">💻</a></td>
+      <td align="center"><a href="https://github.com/firfircelik"><img src="https://avatars0.githubusercontent.com/u/34511698?v=4?s=100" width="100px;" alt="Firat Celik"/><br /><sub><b>Firat Celik</b></sub></a><br /><a href="https://github.com/up-for-grabs/up-for-grabs.net/commits?author=firfircelik" title="Code">💻</a></td>;" alt="Saad"/><br /><sub><b>Saad</b></sub></a><br /><a href="https://github.com/up-for-grabs/up-for-grabs.net/commits?author=SaadAnsari17" title="Code">💻</a></td>
       <td align="center"><a href="https://github.com/JeetPatel1016"><img src="https://avatars.githubusercontent.com/u/60153965?v=4?s=100" width="100px;" alt="Jeet Patel"/><br /><sub><b>Jeet Patel</b></sub></a><br /><a href="https://github.com/up-for-grabs/up-for-grabs.net/commits?author=JeetPatel1016" title="Code">💻</a></td>
     </tr>
   </tbody>
