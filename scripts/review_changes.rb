@@ -237,6 +237,12 @@ if git_remote_url
   end
 
   if remote_result[:exit_code] != 0
+  warn 'A git error occurred while trying to diff the two commits'
+  warn
+  warn "stderr: '#{result[:stderr]}'"
+  warn
+  warn "stdout: '#{result[:stdout]}'"
+end
     warn 'A git error occurred while trying to add the remote #{git_remote_url}'
     warn 'exit code: #{remote_result[:exit_code]}'
     warn 'stderr: #{remote_result[:stderr]}'
