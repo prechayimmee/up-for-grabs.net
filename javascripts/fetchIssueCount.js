@@ -165,7 +165,8 @@ define(['whatwg-fetch', 'promise-polyfill'], () => {
     }
 
     return new Promise((resolve, reject) => {
-      fetch(apiURL, settings).then(
+      fetch(apiURL, settings)
+        .then(
         (response) => {
           if (!response.ok) {
             if (response.status === 304) {
