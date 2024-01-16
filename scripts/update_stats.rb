@@ -144,6 +144,8 @@ projects = Project.find_in_directory(root_directory)
 # Ensure that the modified code is syntactically correct and fully implemented
 
   warn 'Iterating on project updates'
+  handle_inconclusive_repository_missing(result, project)
+  return unless result[:reason] == 'repository-missing'
 
 if apply_changes
   clean = true
