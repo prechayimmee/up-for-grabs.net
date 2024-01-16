@@ -96,7 +96,13 @@ projects = Project.find_in_directory(root_directory)
 
 warn 'Iterating on project updates'
 
-projects.each { |p| update(p, apply_changes:) }
+projects.each do |p|
+  begin
+    update(p, apply_changes:)
+  rescue => e
+    warn "An error occurred while updating project: #{e.message}"
+  end
+end
 
 warn 'Completed iterating on project updates'
 
