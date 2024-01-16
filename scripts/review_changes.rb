@@ -11,14 +11,31 @@ require 'open3'
 
 require 'up_for_grabs_tooling'
 
-def run(cmd)
-  stdout, stderr, status = Open3.capture3(cmd)
+def run_project_review(project)
+  validation_errors = SchemaValidator.validate(project)
 
-  {
-    stdout:,
-    stderr:,
-    exit_code: status.exitstatus
-  }
+  return { project:, kind: 'validation', validation_errors: } if validation_errors.any?
+
+  tags_errors = TagsValidator.validate(project)
+
+  return { project:, kind: 'tags', tags_errors: } if tags_errors.any?
+
+  yaml = project.read_yaml
+  link = yaml['upforgrabs']['link']
+
+  return { project:, kind: 'link-url', url: link } unless valid_url?(link)
+
+  return { project:, kind: 'valid' } unless project.github_project?
+
+  repository_error = repository_check(project)
+
+  return { project:, kind: 'repository', message: repository_error } unless repository_error.nil?
+
+  label_result = label_validation_message(project)
+
+  kind = label_result.key?(:reason) ? 'label' : 'valid'
+
+  { project:, kind:, message: label_result[:message] }
 end
 
 FOUND_PROJECT_FILES_HEADER = ":wave: I'm a robot checking the state of this pull request to save the human reviewers time. " \
@@ -266,8 +283,7 @@ raw_files = result[:stdout].split("\n")
 files = raw_files.map(&:chomp)
 
 if files.empty?
-  puts SKIP_PULL_REQUEST_MESSAGE
-  return
+  # TODO: Implement logic to fetch and cache the issue count using the GitHub API
 end
 
 result = run "git -C '#{dir}' checkout #{head_sha} --force"
