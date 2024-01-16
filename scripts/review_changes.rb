@@ -261,7 +261,6 @@ if result[:exit_code] != 0
   warn "stderr: '#{result[:stderr]}'"
   warn
   warn "stdout: '#{result[:stdout]}'"
-  return
 end
 
 raw_files = result[:stdout].split("\n")
