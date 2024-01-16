@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Reference the existing dependencies from package.json
-gemspec
+
 
 source 'https://rubygems.org'
 
