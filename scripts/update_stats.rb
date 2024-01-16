@@ -10,7 +10,13 @@ require 'graphql/client/http'
 require 'up_for_grabs_tooling'
 
 def update(project, apply_changes: false)
-  # Add error handling for rate limiting
+    # Add error handling for rate limiting
+
+  if result[:rate_limited]
+    warn 'This script is currently rate-limited by the GitHub API'
+    warn 'Marking as inconclusive to indicate that no further work will be done here'
+    return if inconclusive_or_repository_missing(result)
+  end
 
   # Add error handling for rate limiting
   result = GitHubRepositoryLabelActiveCheck.run(project)
