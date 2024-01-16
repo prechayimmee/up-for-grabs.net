@@ -45,11 +45,9 @@ end
 def fix_gha_function2(param1, param2, helper_func)
   # Implement the necessary logic to fix the GitHub Actions run failure
   #
-  # This function is responsible for...
-  # ...
-  # It takes...
-  # It returns...
+  # This function is responsible for fixing the GitHub Actions run failure.
   #
+  # Add your logic here to fix the GitHub Actions run failure
   #
 end
 
