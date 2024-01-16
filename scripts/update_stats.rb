@@ -112,8 +112,8 @@ end
 
 warn 'Completed iterating on project updates'
 
-unless apply_changes
-  warn 'APPLY_CHANGES environment variable unset, exiting instead of making a new PR'
+unless ENV['APPLY_CHANGES']
+  warn 'APPLY_CHANGES environment variable is unset or has an invalid value, exiting instead of making a new PR'
   exit 0
 end
 
