@@ -10,6 +10,55 @@ require 'graphql/client/http'
 require 'up_for_grabs_tooling'
 
 def update(project, apply_changes: false)
+
+  # Add error handling for rate limiting
+  result = GitHubRepositoryLabelActiveCheck.run(project)
+  if result[:rate_limited]
+    warn 'This script is currently rate-limited by the GitHub API'
+    warn 'Marking as inconclusive to indicate that no further work will be done here'
+    exit 0
+  end
+
+  # Handle missing repositories
+  if result[:reason] == 'repository-missing'
+    warn "The GitHub repository '#{project.github_owner_name_pair}' cannot be found. Please confirm the location of the project."
+    return
+  end
+  obj = project.read_yaml
+  label = obj['upforgrabs']['name']
+  link = obj['upforgrabs']['link']
+  result = GitHubRepositoryLabelActiveCheck.run(project)
+
+  if result[:reason] == 'missing'
+    warn "The label '#{label}' for GitHub repository '#{project.github_owner_name_pair}' could not be found. Please ensure this points to a valid label used in the project."
+    return
+  end
+
+  url = result[:url]
+  link_needs_rewriting = link != url && link.include?('/labels/')
+  if link_needs_rewriting
+    return unless apply_changes
+    obj.store('upforgrabs', 'name' => label, 'link' => url)
+  end
+  if result[:last_updated].nil?
+    obj.store('stats',
+              'issue-count' => result[:count],
+              'fork-count' => result[:fork_count])
+  else
+    obj.store('stats',
+              'issue-count' => result[:count],
+              'last-updated' => result[:last_updated],
+              'fork-count' => result[:fork_count])
+  end
+  project.write_yaml(obj)
+  result = GitHubRepositoryLabelActiveCheck.run(project)
+  return unless result[:rate_limited]
+  warn 'This script is currently rate-limited by the GitHub API'
+  warn 'Marking as inconclusive to indicate that no further work will be done here'
+  exit 0
+  return unless result[:reason] == 'repository-missing'
+  warn "The GitHub repository '#{project.github_owner_name_pair}' cannot be found. Please confirm the location of the project."
+  return
   return unless project.github_project?
 
   result = GitHubRepositoryLabelActiveCheck.run(project)
@@ -96,7 +145,14 @@ projects = Project.find_in_directory(root_directory)
 
 warn 'Iterating on project updates'
 
-projects.each { |p| update(p, apply_changes:) }
+if apply_changes
+  clean = true
+  projects.each { |p| update(p, apply_changes:) }
+  warn 'Completed iterating on project updates'
+else
+  warn 'APPLY_CHANGES environment variable unset, exiting instead of making a new PR'
+  exit 0
+end
 
 warn 'Completed iterating on project updates'
 
@@ -138,9 +194,8 @@ Dir.chdir(root_directory) do
   end
 end
 
-unless clean
+if clean
   body = 'This PR regenerates the stats for all repositories that use a single label in a single GitHub repository'
-
   client.create_pull_request(current_repo, 'gh-pages', branch_name, 'Updated project stats', body) if found_pr.nil?
 end
 
