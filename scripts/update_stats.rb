@@ -158,4 +158,6 @@ delta = finish - start
 
 warn "Operation took #{delta}s"
 
+warn "Operation took #{delta}s"
+
 exit 0
