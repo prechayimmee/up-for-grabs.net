@@ -118,7 +118,7 @@ define(['whatwg-fetch', 'promise-polyfill'], () => {
    *
    * @returns {number|string|null}
    */
-  async function fetchIssueCount(ownerAndName, label) { /* Add necessary logic to handle error or issue causing GitHub Actions run failure */
+  async function fetchIssueCount(ownerAndName, label) {
   // Handle the error or issue related to fetching and caching the issue count using the GitHub API
     const cached = getValue(ownerAndName);
     const now = new Date();
@@ -167,7 +167,7 @@ define(['whatwg-fetch', 'promise-polyfill'], () => {
     return new Promise((resolve, reject) => {
       fetch(apiURL, settings).then(
         (response) => {
-          if (!response.ok) {
+          if (response.status === 304 || !response.ok) {
             if (response.status === 304) {
               // no content is returned in the 304 Not Modified response body
               const count = cached ? cached.count : 0;
@@ -193,7 +193,27 @@ define(['whatwg-fetch', 'promise-polyfill'], () => {
             );
 
             return;
+          } else if (response.status === 304) {
+              // no content is returned in the 304 Not Modified response body
+              const count = cached ? cached.count : 0;
+              resolve(count);
+              return;
           }
+          clearValue(ownerAndName);
+          const rateLimitError = inspectRateLimitError(response);
+          if (rateLimitError) {
+            reject(rateLimitError);
+            return;
+          }
+
+          response.json().then(
+            (json) => {
+              reject(inspectGenericError(json, response));
+            },
+            (error) => {
+              reject(error);
+            }
+          );
 
           const etag = response.headers.get('ETag');
           const linkHeader = response.headers.get('Link');
