@@ -19,11 +19,11 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@af848b40be8bb463a751551a1180d74782ba8a72
         with:
-          ruby-version: '3.2'
+          ruby-version: '3.0'
           bundler-cache: true
           cache-version: 0
       - name: Run script to update stats for all projects
         run: bundle exec ruby scripts/update_stats.rb
         env:
-          GITHUB_TOKEN: ${{ secrets.SHIFTBOT_TOKEN }}
-          APPLY_CHANGES: ${{ inputs.apply-changes }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          APPLY_CHANGES: ${{ github.event.inputs.apply-changes }}
