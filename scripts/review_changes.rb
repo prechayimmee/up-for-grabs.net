@@ -149,7 +149,7 @@ def label_validation_message(project)
     return { reason: :rate_limited }
   end
 
-  return "An error occurred while querying for the project label. Details: #{result[:error].inspect}" if result[:reason] == 'error' || result[:reason] == 'repository-missing' || result[:reason] == 'missing' || result[:reason] == 'repository-missing' || result[:reason] == 'missing'
+  return "An error occurred while querying for the project label. Details: #{result[:error].inspect}" if result[:reason] == 'error'
 
   if result[:reason] == 'repository-missing'
     return {
