@@ -7,16 +7,19 @@ require 'pathname'
 require 'graphql/client'
 require 'graphql/client/http'
 
-require 'up_for_grabs_tooling'
+require 'github_repository_label_active_check'
 
-def update(project, apply_changes: false)
+  def update(project, apply_changes: false)
+  
+  remote_result = nil
+  
   return unless project.github_project?
 
-  result = UpForGrabsTooling::GitHubRepositoryLabelActiveCheck.run(project)
+  result = GitHubRepositoryValidationCheck.run(project)
 
   warn "Project: #{project.github_owner_name_pair} returned #{result.inspect}"
 
-  if result[:rate_limited]
+  if result.fetch(:reason, '') == 'rate-limited'
     warn 'This script is currently rate-limited by the GitHub API'
     warn 'Marking as inconclusive to indicate that no further work will be done here'
     exit 0
@@ -56,10 +59,11 @@ def update(project, apply_changes: false)
     return
   end
 
-  obj.store('upforgrabs', 'name' => label, 'link' => url) if link_needs_rewriting
+  obj.store('upforgrabs', 'name' => label, 'link' => url)
+    return unless apply_changes
 
   if result[:last_updated].nil?
-    obj.store('stats',
+    obj.store('stats', 'last-updated' => result[:last_updated],
               'issue-count' => result[:count],
               'fork-count' => result[:fork_count])
   else

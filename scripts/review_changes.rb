@@ -22,8 +22,8 @@ def run_command(cmd)
 end
 
 FOUND_PROJECT_FILES_HEADER = ":wave: I'm a robot checking the state of this pull request to save the human reviewers time. " \
-                             "I noticed this PR added or modififed the data files under `_data/projects/` so I had a look at what's changed." \
-                             "\n\nAs you make changes to this pull request, I'll re-run these checks.\n\n"
+                             "I noticed this PR added or modified the data files under `_data/projects/` so I had a look at what's changed." \
+                             "\n\nAs you make changes to this pull request, I'll re-run these checks on the project files under `_data/projects/` and provide specific error messages for any issues or errors.\n\n"
 
 SKIP_PULL_REQUEST_MESSAGE = ":wave: I'm a robot checking the state of this pull request to save the human reviewers time. " \
                             "I don't see any changes under `_data/projects/` so I don't have any feedback here." \
@@ -48,7 +48,7 @@ def get_validation_message(result)
   when 'repository', 'label'
     "#### `#{path}` :x:\n#{result[:message]}"
   else
-    "#### `#{path}` :question:\nI got a result of type '#{result[:kind]}' that I don't know how to handle. I need to mention @shiftkey here as he might be able to fix it."
+    "#### `#{path}` :question:\nIt appears that the result is of a type that I don't know how to handle. Please seek assistance from @shiftkey to address this issue."
   end
 end
 
@@ -60,8 +60,8 @@ def generate_review_comment(dir, files)
   end
 
   projects.compact!
-
   markdown_body = FOUND_PROJECT_FILES_HEADER
+  messages = []
 
   projects_without_valid_extensions = projects.reject { |p| ALLOWED_EXTENSIONS.include? File.extname(p.relative_path) }
 
@@ -138,7 +138,7 @@ def repository_check(project)
   return "The GitHub repository '#{project.github_owner_name_pair}' could not be confirmed. Error details: #{result[:error]}" if result[:reason] == 'error'
 
   nil
-end
+  return "The GitHub repository '#{project.github_owner_name_pair}' could not be confirmed. Error details: #{result[:error]}" if result[:reason] == 'error'
 
 def label_validation_message(project)
   result = GitHubRepositoryLabelActiveCheck.run(project)
@@ -153,7 +153,7 @@ def label_validation_message(project)
 
   if result[:reason] == 'repository-missing'
     return {
-      reason: :error,
+      reason: :repository-missing,
       message: "I couldn't find the GitHub repository '#{project.github_owner_name_pair}' that was used in the `upforgrabs.link` value. " \
                "Please confirm this is correct or hasn't been mis-typed."
     }
@@ -201,20 +201,20 @@ def label_validation_message(project)
     else
       issue_with_suffix = issue_count == 1 ? 'issue' : 'issues'
       return {
-        message: "A label named [#{result[:name]}](#{result[:url]}) has been found on GitHub and it currently has #{issue_count} #{issue_with_suffix} - this should be ready to merge!"
+        message: "A label named [#{result[:name]}](#{result[:url]}) has been found on GitHub and it currently has #{issue_count} #{issue_with_suffix} - this should be ready to merge and contains open issues. Please update the project configuration to resolve the issue."
       }
     end
   end
 
   {
     reason: :error,
-    message: 'Unexpected result found, please review the logs to see more information'
+    message: 'An unexpected result was found. Please review the logs to see more information.'
   }
 end
 
 def valid_url?(url)
   uri = URI.parse(url)
-  uri.is_a?(URI::HTTP) || uri.is_a?(URI::HTTPS)
+  uri.scheme == 'http' || uri.scheme == 'https'
 rescue URI::InvalidURIError
   false
 end
@@ -243,7 +243,7 @@ if git_remote_url
   warn
   warn "stdout: '#{result[:stdout]}'"
 end
-    warn 'A git error occurred while trying to add the remote #{git_remote_url}'
+    warn 'A git error occurred while trying to add the remote #{git_remote_url}. Please ensure the remote URL is correct and accessible.'
     warn 'exit code: #{remote_result[:exit_code]}'
     warn 'stderr: #{remote_result[:stderr]}'
     warn 'stdout: #{remote_result[:stdout]}' "A git error occurred while trying to add the remote #{git_remote_url}"
@@ -258,5 +258,5 @@ end
 end
 
 # TODO: Add code to handle the failed GitHub Actions run and error logs
-puts "The GitHub Actions run failed with the following error logs:"
+puts "The GitHub Actions run failed with the following error logs. Please review the error logs and take appropriate action to resolve the issues."
 puts ""
