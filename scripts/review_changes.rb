@@ -20,6 +20,14 @@ def run_command(cmd)
     exit_code: status.exitstatus
   }
 end
+  stdout, stderr, status = Open3.capture3(cmd)
+
+  {
+    stdout: stdout,
+    stderr: stderr,
+    exit_code: status.exitstatus
+  }
+end
 
 FOUND_PROJECT_FILES_HEADER = ":wave: I'm a robot checking the state of this pull request to save the human reviewers time. " \
                              "I noticed this PR added or modififed the data files under `_data/projects/` so I had a look at what's changed." \
@@ -229,10 +237,10 @@ range = "#{base_sha}...#{head_sha}"
 if git_remote_url
   # fetching the fork repository so that our commits are in this repository
   # for processing and comparison with the base branch
-  remote_result = run_command "git -C '#{dir}' remote add fork #{git_remote_url} "
+  remote_result = result = remote_result = run_command "git -C '#{dir}' remote add fork #{git_remote_url} -f"
 
   if remote_result[:exit_code] == 3
-    run_command "git -C '#{dir}' remote rm fork "
+    remote_result = run_command "git -C '#{dir}' remote rm fork "
     remote_result = run "git -C '#{dir}' remote add fork #{git_remote_url} -f"
   end
 
