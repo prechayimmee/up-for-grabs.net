@@ -6,14 +6,19 @@ require_relative 'fix_gha'
 # Ensure to cover all possible edge cases and error scenarios
 # Use appropriate test data and create mocks when necessary
 def test_fix_gha_functions
+  # Test fix_gha_function1 edge cases and error scenarios
+  # Use appropriate test data and create necessary mocks
+  # ...
     # Test cases for fix_gha_function1
-  # Write test cases for fix_gha_function1 here
+  # Add extensive test cases to cover edge cases and error scenarios
+  # Use appropriate test data and create necessary mocks
   # ...
 
   # Test cases for fix_gha_function2
-  # Write test cases for fix_gha_function2 here
+  # Add extensive test cases to cover edge cases and error scenarios
+  # Use appropriate test data and create necessary mocks
   # ...
 end
 
-# Run the unit tests
+# Run the extensive unit tests
 test_fix_gha_functions
