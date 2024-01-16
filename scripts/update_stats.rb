@@ -72,15 +72,15 @@ def update(project, apply_changes: false)
   project.write_yaml(obj)
 end
 
-current_repo = ENV.fetch('GITHUB_REPOSITORY', nil)
+current_repo = ENV['GITHUB_REPOSITORY'] || raise('GITHUB_REPOSITORY environment variable is missing')
 
 warn "Inspecting projects files for '#{current_repo}'"
 
 start = Time.now
 
-root_directory = ENV.fetch('GITHUB_WORKSPACE', nil)
-apply_changes = ENV.fetch('APPLY_CHANGES', false)
-token = ENV.fetch('GITHUB_TOKEN', nil)
+root_directory = ENV['GITHUB_WORKSPACE'] || raise('GITHUB_WORKSPACE environment variable is missing')
+apply_changes = ENV['APPLY_CHANGES'] || raise('APPLY_CHANGES environment variable is missing or has an invalid value')
+token = ENV['GITHUB_TOKEN'] || raise('GITHUB_TOKEN environment variable is missing')
 
 client = Octokit::Client.new(access_token: token)
 prs = client.pulls current_repo
