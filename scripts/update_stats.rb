@@ -134,6 +134,8 @@ Dir.chdir(root_directory) do
 
   clean = system('git diff --quiet > /dev/null')
 
+changes_exist = !clean
+
   puts 'After git diff'
 
   unless clean
