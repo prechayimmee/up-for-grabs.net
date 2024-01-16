@@ -60,8 +60,8 @@ def generate_review_comment(dir, files)
   end
 
   projects.compact!
-
   markdown_body = FOUND_PROJECT_FILES_HEADER
+  messages = []
 
   projects_without_valid_extensions = projects.reject { |p| ALLOWED_EXTENSIONS.include? File.extname(p.relative_path) }
 
