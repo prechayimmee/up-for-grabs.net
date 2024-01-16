@@ -16,7 +16,7 @@ def update(project, apply_changes: false)
   if result[:rate_limited]
     warn 'This script is currently rate-limited by the GitHub API'
     warn 'Marking as inconclusive to indicate that no further work will be done here'
-    exit 0
+    return if inconclusive_or_repository_missing(result)
   end
 
   # Handle missing repositories
@@ -31,7 +31,7 @@ def update(project, apply_changes: false)
 
   if result[:reason] == 'missing'
     warn "The label '#{label}' for GitHub repository '#{project.github_owner_name_pair}' could not be found. Please ensure this points to a valid label used in the project."
-    return
+    return if label_missing(result, label, project)
   end
 
   url = result[:url]
@@ -53,12 +53,9 @@ def update(project, apply_changes: false)
   project.write_yaml(obj)
   result = GitHubRepositoryLabelActiveCheck.run(project)
   return unless result[:rate_limited]
-  warn 'This script is currently rate-limited by the GitHub API'
-  warn 'Marking as inconclusive to indicate that no further work will be done here'
-  exit 0
+  handle_rate_limiting_and_repository_missing(result, project)
   return unless result[:reason] == 'repository-missing'
-  warn "The GitHub repository '#{project.github_owner_name_pair}' cannot be found. Please confirm the location of the project."
-  return
+  handle_inconclusive_repository_missing(result, project)
   return unless project.github_project?
 
   result = GitHubRepositoryLabelActiveCheck.run(project)
@@ -78,7 +75,7 @@ def update(project, apply_changes: false)
 
   if result[:reason] == 'issues-disabled'
     warn "The GitHub repository '#{project.github_owner_name_pair}' has issues disabled, and should be cleaned up with the next deprecation run."
-    return
+    return if issues_disabled_or_error(result)
   end
 
   if result[:reason] == 'error'
