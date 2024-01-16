@@ -103,8 +103,7 @@ define(['whatwg-fetch', 'promise-polyfill'], () => {
   }
 
   /**
-   * Fetch and cache the issue count for the requested repository using the
-   * GitHub API.
+   * Handle errors and exceptions properly when fetching and caching the issue count for the requested repository using the GitHub API, and add error handling and logging for API request errors.
    *
    * This covers a whole bunch of scenarios:
    *
@@ -163,7 +162,7 @@ define(['whatwg-fetch', 'promise-polyfill'], () => {
       };
     }
 
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       fetch(apiURL, settings).then(
         (response) => {
           if (!response.ok) {
