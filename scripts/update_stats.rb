@@ -134,6 +134,8 @@ warn "Inspecting projects files for '#{current_repo}'"
 
 start = Time.now
 
+new_pr_created = false
+
 root_directory = ENV.fetch('GITHUB_WORKSPACE', nil)
 apply_changes = ENV.fetch('APPLY_CHANGES', false)
 token = ENV.fetch('GITHUB_TOKEN', nil)
@@ -205,7 +207,7 @@ end
 
 if clean
   body = 'This PR regenerates the stats for all repositories that use a single label in a single GitHub repository'
-  client.create_pull_request(current_repo, 'gh-pages', branch_name, 'Updated project stats', body) if found_pr.nil?
+  client.create_pull_request(current_repo, 'main', branch_name, 'Updated project stats', body) unless new_pr_created
 end
 
 finish = Time.now
