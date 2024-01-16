@@ -23,7 +23,7 @@ end
 
 FOUND_PROJECT_FILES_HEADER = ":wave: I'm a robot checking the state of this pull request to save the human reviewers time. " \
                              "I noticed this PR added or modified the data files under `_data/projects/` so I had a look at what's changed." \
-                             "\n\nAs you make changes to this pull request, I'll re-run these checks.\n\n"
+                             "\n\nAs you make changes to this pull request, I'll re-run these checks on the project files under `_data/projects/` and provide specific error messages for any issues or errors.\n\n"
 
 SKIP_PULL_REQUEST_MESSAGE = ":wave: I'm a robot checking the state of this pull request to save the human reviewers time. " \
                             "I don't see any changes under `_data/projects/` so I don't have any feedback here." \
@@ -149,11 +149,11 @@ def label_validation_message(project)
     return { reason: :rate_limited }
   end
 
-  return "An error occurred while querying for the project label. Details: #{result[:error].inspect}" if result[:reason] == 'error'
+  return "An error occurred while querying for the project label. Details: #{result[:error].inspect}" if result[:reason] == 'error' || result[:reason] == 'repository-missing' || result[:reason] == 'missing' || result[:reason] == 'repository-missing' || result[:reason] == 'missing'
 
   if result[:reason] == 'repository-missing'
     return {
-      reason: :error,
+      reason: :repository-missing,
       message: "I couldn't find the GitHub repository '#{project.github_owner_name_pair}' that was used in the `upforgrabs.link` value. " \
                "Please confirm this is correct or hasn't been mis-typed."
     }
@@ -201,14 +201,14 @@ def label_validation_message(project)
     else
       issue_with_suffix = issue_count == 1 ? 'issue' : 'issues'
       return {
-        message: "A label named [#{result[:name]}](#{result[:url]}) has been found on GitHub and it currently has #{issue_count} #{issue_with_suffix} - this should be ready to merge!"
+        message: "A label named [#{result[:name]}](#{result[:url]}) has been found on GitHub and it currently has #{issue_count} #{issue_with_suffix} - this should be ready to merge and contains open issues. Please update the project configuration to resolve the issue."
       }
     end
   end
 
   {
     reason: :error,
-    message: 'Unexpected result found, please review the logs to see more information'
+    message: 'An unexpected result was found. Please review the logs to see more information.'
   }
 end
 
@@ -243,7 +243,7 @@ if git_remote_url
   warn
   warn "stdout: '#{result[:stdout]}'"
 end
-    warn 'A git error occurred while trying to add the remote #{git_remote_url}'
+    warn 'A git error occurred while trying to add the remote #{git_remote_url}. Please ensure the remote URL is correct and accessible.'
     warn 'exit code: #{remote_result[:exit_code]}'
     warn 'stderr: #{remote_result[:stderr]}'
     warn 'stdout: #{remote_result[:stdout]}' "A git error occurred while trying to add the remote #{git_remote_url}"
@@ -258,5 +258,5 @@ end
 end
 
 # TODO: Add code to handle the failed GitHub Actions run and error logs
-puts "The GitHub Actions run failed with the following error logs:"
+puts "The GitHub Actions run failed with the following error logs. Please review the error logs and take appropriate action to resolve the issues."
 puts ""
