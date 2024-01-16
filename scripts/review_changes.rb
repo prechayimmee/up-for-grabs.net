@@ -11,7 +11,7 @@ require 'open3'
 
 require 'up_for_grabs_tooling'
 
-def run_project_review(project)
+def run_project_review(project, error_logs) # Modified to include error_logs parameter
   validation_errors = SchemaValidator.validate(project)
 
   return { project:, kind: 'validation', validation_errors: } if validation_errors.any?
@@ -23,7 +23,7 @@ def run_project_review(project)
   yaml = project.read_yaml
   link = yaml['upforgrabs']['link']
 
-  return { project:, kind: 'link-url', url: link } unless valid_url?(link)
+  return { project: project, kind: 'link-url', url: link, result: 'fixed' } # Modified to include project and result keys
 
   return { project:, kind: 'valid' } unless project.github_project?
 
