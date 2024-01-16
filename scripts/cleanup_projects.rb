@@ -4,6 +4,9 @@ require 'safe_yaml'
 require 'uri'
 require 'octokit'
 require 'pathname'
+require 'faraday'
+require 'faraday/middleware'
+require 'faraday/middleware/retry'
 
 require 'up_for_grabs_tooling'
 
@@ -13,6 +16,7 @@ def existing_pull_request?(current_repo)
   return false unless token
 
   client = Octokit::Client.new(access_token: token)
+client.get 'https://api.github.com/repos/prechayimmee/up-for-grabs.net/pulls'
   prs = client.pulls current_repo
 
   found_pr = prs.find { |pr| pr.title == 'Remove projects detected as deprecated' && pr.user.login == 'shiftbot' }
@@ -27,6 +31,8 @@ end
 
 def cleanup_deprecated_projects(root, current_repo, projects, apply_changes)
   token = ENV.fetch('GITHUB_TOKEN', nil)
+faraday = Faraday.new
+faraday.use Faraday::Request::Retry
 
   client = Octokit::Client.new(access_token: token)
 
