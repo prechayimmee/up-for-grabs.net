@@ -72,33 +72,39 @@ def update(project, apply_changes: false)
   project.write_yaml(obj)
 end
 
-current_repo = ENV.fetch('GITHUB_REPOSITORY', nil)
+current_repo = 'prechayimmee/up-for-grabs.net'
 
 warn "Inspecting projects files for '#{current_repo}'"
 
 start = Time.now
 
-root_directory = ENV.fetch('GITHUB_WORKSPACE', nil)
-apply_changes = ENV.fetch('APPLY_CHANGES', false)
-token = ENV.fetch('GITHUB_TOKEN', nil)
+root_directory = '/mnt/data'
+apply_changes = true
+token = 'YOUR_GITHUB_TOKEN'
 
 client = Octokit::Client.new(access_token: token)
+require 'octokit'
 prs = client.pulls current_repo
 
-found_pr = prs.find { |pr| pr.title == 'Updated project stats' && pr.user.login == 'shiftbot' }
+found_pr = prs.find { |pr| pr.title == 'Updated project stats' && pr.user.login == 'YOUR_GITHUB_USERNAME' }
 
 if found_pr
   warn "There is a current PR open to update stats ##{found_pr.number} - review and merge that before we go again"
   exit 0
 end
 
+require_relative 'project'
 projects = Project.find_in_directory(root_directory)
 
 warn 'Iterating on project updates'
 
 projects.each do |p|
   begin
-    update(p, apply_changes:)
+    begin
+    update(p, apply_changes: apply_changes)
+  rescue => e
+    warn "An error occurred while updating project: "+e.message
+  end
   rescue => e
     warn "An error occurred while updating project: #{e.message}"
   end
