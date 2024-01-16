@@ -15,8 +15,16 @@ def run_command(cmd)
   stdout, stderr, status = Open3.capture3(cmd)
 
   {
-    stdout:,
-    stderr:,
+    stdout: stdout,
+    stderr: stderr,
+    exit_code: status.exitstatus
+  }
+end
+  stdout, stderr, status = Open3.capture3(cmd)
+
+  {
+    stdout: stdout,
+    stderr: stderr,
     exit_code: status.exitstatus
   }
 end
@@ -85,7 +93,7 @@ def generate_review_comment(dir, files)
       messages << projects_with_errors.map { |result| get_validation_message(result) }
     end
   else
-    messages = projects.map { |p| review_project(p) }.map { |r| get_validation_message(r) }
+    messages = projects.map { |p| review_project(p) }
   end
 
   markdown_body + messages.join("\n\n")
@@ -94,11 +102,11 @@ end
 def review_project(project)
   validation_errors = SchemaValidator.validate(project)
 
-  return { project:, kind: 'validation', validation_errors: } if validation_errors.any?
+  return { project: project, kind: 'validation', validation_errors: validation_errors } if validation_errors.any?
 
   tags_errors = TagsValidator.validate(project)
 
-  return { project:, kind: 'tags', tags_errors: } if tags_errors.any?
+  return { project: project, kind: 'tags', tags_errors: tags_errors } if tags_errors.any?
 
   yaml = project.read_yaml
   link = yaml['upforgrabs']['link']
@@ -129,7 +137,7 @@ def repository_check(project)
     return nil
   end
 
-  return "The GitHub repository '#{project.github_owner_name_pair}' has been marked as archived, which suggests it is not active." if result[:reason] == 'archived'
+  return "The GitHub repository '#{project.github_owner_name_pair}' has been marked as archived, which suggests it is not active." if result[:reason] == 'archived' || result[:reason] == :archived
 
   return "The GitHub repository '#{project.github_owner_name_pair}' cannot be found. Please confirm the location of the project." if result[:reason] == 'missing'
 
@@ -219,9 +227,9 @@ rescue URI::InvalidURIError
   false
 end
 
-head_sha = ENV.fetch('HEAD_SHA', nil)
-base_sha = ENV.fetch('BASE_SHA', nil)
-git_remote_url = ENV.fetch('GIT_REMOTE_URL', nil)
+head_sha = ENV['HEAD_SHA'] || nil
+base_sha = ENV['BASE_SHA'] || nil
+git_remote_url = ENV['GIT_REMOTE_URL'] || nil
 dir = ENV.fetch('GITHUB_WORKSPACE', nil)
 
 range = "#{base_sha}...#{head_sha}"
@@ -229,10 +237,10 @@ range = "#{base_sha}...#{head_sha}"
 if git_remote_url
   # fetching the fork repository so that our commits are in this repository
   # for processing and comparison with the base branch
-  remote_result = run_command "git -C '#{dir}' remote add fork #{git_remote_url} "
+  remote_result = result = remote_result = run_command "git -C '#{dir}' remote add fork #{git_remote_url} -f"
 
   if remote_result[:exit_code] == 3
-    run_command "git -C '#{dir}' remote rm fork "
+    remote_result = run_command "git -C '#{dir}' remote rm fork "
     remote_result = run "git -C '#{dir}' remote add fork #{git_remote_url} -f"
   end
 
@@ -262,7 +270,6 @@ result = run_command "git -C '#{dir}' diff #{range} --name-only -- _data/project
 if result[:exit_code] != 0
   puts 'I was unable to perform the comparison due to a git error'
   puts 'Check the workflow run to see more information about this error'
-
   warn 'A git error occurred while trying to diff the two commits'
   warn
   warn "stderr: '#{result[:stderr]}'"
@@ -280,7 +287,7 @@ if files.empty?
 end
 
 result = run_command "git -C '#{dir}' checkout #{head_sha} --force"
-unless result[:exit_code].zero?
+unless result[:exit_code] == 0
   puts 'A problem occurred when trying to load this commit'
   return
 end
@@ -288,5 +295,7 @@ end
 markdown_body = generate_review_comment(dir, files)
 
 puts markdown_body
+
+exit result[:exit_code]
 
 exit 0
