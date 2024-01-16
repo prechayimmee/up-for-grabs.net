@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 require 'up_for_grabs_tooling'
+require 'open3'
 
-root = Pathname.new(File.dirname(__dir__))
+root = Pathname.new(Dir.pwd)
 
 result = CommandLineValidator.validate(root)
 

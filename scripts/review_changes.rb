@@ -13,7 +13,9 @@ require 'up_for_grabs_tooling'
 
 def run_command(cmd)
   begin
-    output = `#{cmd}`
+    output, stderr, status = Open3.capture3(cmd)
+exit_code = status.exitstatus
+error_message = status.success? ? nil : 'An error occurred while running the command'
 exit_code = $?.exitstatus
 error_message = $?.success? ? nil : 'An error occurred while running the command'
     
@@ -229,10 +231,10 @@ rescue URI::InvalidURIError
   false
 end
 
-head_sha = ENV.fetch('HEAD_SHA', nil)
-base_sha = ENV.fetch('BASE_SHA', nil)
-git_remote_url = ENV.fetch('GIT_REMOTE_URL', nil)
-dir = ENV.fetch('GITHUB_WORKSPACE', nil)
+head_sha = ENV['HEAD_SHA']
+base_sha = ENV['BASE_SHA']
+git_remote_url = ENV['GIT_REMOTE_URL']
+dir = ENV['GITHUB_WORKSPACE']
 
 range = "#{base_sha}...#{head_sha}"
 
