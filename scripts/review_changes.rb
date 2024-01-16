@@ -138,7 +138,7 @@ def repository_check(project)
   return "The GitHub repository '#{project.github_owner_name_pair}' could not be confirmed. Error details: #{result[:error]}" if result[:reason] == 'error'
 
   nil
-end
+  return "The GitHub repository '#{project.github_owner_name_pair}' could not be confirmed. Error details: #{result[:error]}" if result[:reason] == 'error'
 
 def label_validation_message(project)
   result = GitHubRepositoryLabelActiveCheck.run(project)
