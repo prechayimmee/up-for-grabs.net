@@ -11,7 +11,7 @@ def test_fix_gha_functions
 # Use appropriate test data and create mocks when necessary
   # ...
 
-  # Test cases for fix_gha_function2
+# Test cases for fix_gha_function2
 # Add test cases to cover all possible edge cases and error scenarios
 # Use appropriate test data and create mocks when necessary
   # ...
