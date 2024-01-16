@@ -93,7 +93,7 @@ def generate_review_comment(dir, files)
       messages << projects_with_errors.map { |result| get_validation_message(result) }
     end
   else
-    messages = projects.map { |p| review_project(p) }.map { |r| get_validation_message(r) }
+    messages = projects.map { |p| review_project(p) }
   end
 
   markdown_body + messages.join("\n\n")
@@ -102,11 +102,11 @@ end
 def review_project(project)
   validation_errors = SchemaValidator.validate(project)
 
-  return { project:, kind: 'validation', validation_errors: } if validation_errors.any?
+  return { project: project, kind: 'validation', validation_errors: validation_errors } if validation_errors.any?
 
   tags_errors = TagsValidator.validate(project)
 
-  return { project:, kind: 'tags', tags_errors: } if tags_errors.any?
+  return { project: project, kind: 'tags', tags_errors: tags_errors } if tags_errors.any?
 
   yaml = project.read_yaml
   link = yaml['upforgrabs']['link']
@@ -137,7 +137,7 @@ def repository_check(project)
     return nil
   end
 
-  return "The GitHub repository '#{project.github_owner_name_pair}' has been marked as archived, which suggests it is not active." if result[:reason] == 'archived'
+  return "The GitHub repository '#{project.github_owner_name_pair}' has been marked as archived, which suggests it is not active." if result[:reason] == 'archived' || result[:reason] == :archived
 
   return "The GitHub repository '#{project.github_owner_name_pair}' cannot be found. Please confirm the location of the project." if result[:reason] == 'missing'
 
