@@ -236,8 +236,11 @@ if git_remote_url
     remote_result = run "git -C '#{dir}' remote add fork #{git_remote_url} -f"
   end
 
-  unless remote_result[:exit_code].zero?
-    warn "A git error occurred while trying to add the remote #{git_remote_url}"
+  if remote_result[:exit_code] != 0
+    warn 'A git error occurred while trying to add the remote #{git_remote_url}'
+    warn 'exit code: #{remote_result[:exit_code]}'
+    warn 'stderr: #{remote_result[:stderr]}'
+    warn 'stdout: #{remote_result[:stdout]}' "A git error occurred while trying to add the remote #{git_remote_url}"
     warn
     warn "exit code: #{remote_result[:exit_code]}"
     warn
@@ -249,7 +252,7 @@ if git_remote_url
 end
 
 result = run_command "git -C '#{dir}' diff #{range} --name-only -- _data/projects/"
-unless result[:exit_code].zero?
+if result[:exit_code] != 0
   puts 'I was unable to perform the comparison due to a git error'
   puts 'Check the workflow run to see more information about this error'
 
