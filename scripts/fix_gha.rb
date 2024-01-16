@@ -20,6 +20,7 @@ def fix_gha_function1(param1, param2, helper_func)
   #
   # This function is responsible for fixing the GitHub Actions run failure.
   #
+  # Add your logic here to fix the GitHub Actions run failure
   #
 end
 
