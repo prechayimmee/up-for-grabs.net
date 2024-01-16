@@ -73,6 +73,7 @@ that are listed:
 - [Giraffe](https://github.com/up-for-grabs/up-for-grabs.net/blob/gh-pages/_data/projects/Giraffe.yml)
 - [.NET Runtime](https://github.com/up-for-grabs/up-for-grabs.net/blob/gh-pages/_data/projects/dotnet-runtime.yml)
 - [Rust](https://github.com/up-for-grabs/up-for-grabs.net/blob/gh-pages/_data/projects/rust.yml)
+- [Project_Name](Project_Link)
 - [The Up for Grabs project itself](https://github.com/up-for-grabs/up-for-grabs.net/blob/gh-pages/_data/projects/up-for-grabs.net.yml)
 
 You might have noticed the `stats` fields in the links above. Those are not
