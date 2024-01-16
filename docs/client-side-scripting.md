@@ -84,7 +84,8 @@ define([
   // chosen is listed here as a dependency because it's used from a jQuery
   // selector, and needs to be ready before this code runs
   'chosen',
-], ($, ProjectsService, _, sammy) => {
+  'fetchIssueCount',
+], ($, ProjectsService, _, sammy, fetchIssueCount) => {
   // application code goes here
 });
 ```
@@ -108,7 +109,10 @@ Up-For-Grabs now supports using `jest` to run tests inside a NodeJS context.
 
 It uses `babel-jest` which automagically transforms AMD modules into CommonJS
 modules.
-
+  'fetchIssueCount',
+], ($, ProjectsService, _, sammy, fetchIssueCount) => {
+  // application code goes here
+});
 You can run these tests at any time using `yarn test` to ensure the
 functionality covered by tests is not affected by your local changes.
 
