@@ -85,7 +85,7 @@ token = ENV['GITHUB_TOKEN']
 client = Octokit::Client.new(bearer_token: token)
 prs = client.pulls current_repo
 
-found_pr = prs.find { |pr| pr.title == 'Updated project stats' && pr.user.login == 'shiftbot' }
+found_pr = prs.find { |pr| pr.title == 'Updated project stats' && pr.user.login == 'shiftbot' && pr.state == 'open' }
 
 if found_pr
   warn "There is a current PR open to update stats ##{found_pr.number} - review and merge that before we go again"
