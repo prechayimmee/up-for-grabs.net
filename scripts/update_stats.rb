@@ -12,7 +12,7 @@ require 'up_for_grabs_tooling'
 def update(project, apply_changes: false)
   return unless project.github_project?
 
-  result = UpForGrabsTooling::GitHubRepositoryLabelActiveCheck.run(project)
+  result = UpForGrabsTooling::GitHubRepositoryLabelActiveCheck.run_check(project)
 
   warn "Project: #{project.github_owner_name_pair} returned #{result.inspect}"
 
@@ -98,7 +98,7 @@ warn 'Iterating on project updates'
 
 projects.each do |p|
   begin
-    update(p, apply_changes:)
+    update_project(p, apply_changes: apply_changes)
   rescue => e
     warn "An error occurred while updating project: #{e.message}"
   end
