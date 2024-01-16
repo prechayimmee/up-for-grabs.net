@@ -23,7 +23,7 @@ def update(project, apply_changes: false)
   end
 
   if result[:reason] == 'repository-missing'
-    warn "The GitHub repository '#{project.github_owner_name_pair}' cannot be found. Please confirm the location of the project."
+    warn "The GitHub repository '#{project.github_owner_name_pair}'! Please confirm the location of the project."
     return
   end
 
