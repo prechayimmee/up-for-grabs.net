@@ -10,6 +10,7 @@ require 'graphql/client/http'
 require 'up_for_grabs_tooling'
 
 def update(project, apply_changes: false)
+  # Add error handling for rate limiting
 
   # Add error handling for rate limiting
   result = GitHubRepositoryLabelActiveCheck.run(project)
@@ -140,7 +141,9 @@ end
 
 projects = Project.find_in_directory(root_directory)
 
-warn 'Iterating on project updates'
+# Ensure that the modified code is syntactically correct and fully implemented
+
+  warn 'Iterating on project updates'
 
 if apply_changes
   clean = true
