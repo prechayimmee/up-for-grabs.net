@@ -80,9 +80,9 @@ start = Time.now
 
 root_directory = Dir.pwd
 apply_changes = ENV['APPLY_CHANGES'] == 'true'
-token = ENV.fetch('GITHUB_TOKEN', nil)
+token = ENV['GITHUB_TOKEN']
 
-client = Octokit::Client.new(access_token: token)
+client = Octokit::Client.new(bearer_token: token)
 prs = client.pulls current_repo
 
 found_pr = prs.find { |pr| pr.title == 'Updated project stats' && pr.user.login == 'shiftbot' }
