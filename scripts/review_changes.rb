@@ -48,7 +48,7 @@ def get_validation_message(result)
   when 'repository', 'label'
     "#### `#{path}` :x:\n#{result[:message]}"
   else
-    "#### `#{path}` :question:\nI got a result of type '#{result[:kind]}' that I don't know how to handle. I need to mention @shiftkey here as he might be able to fix it."
+    "#### `#{path}` :question:\nIt appears that the result is of a type that I don't know how to handle. Please seek assistance from @shiftkey to address this issue."
   end
 end
 
