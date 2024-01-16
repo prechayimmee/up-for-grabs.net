@@ -13,7 +13,9 @@ require 'up_for_grabs_tooling'
 
 def run_command(cmd)
   begin
-    stdout, stderr, status = Open3.capture3(cmd)
+    output = `#{cmd}`
+exit_code = $?.exitstatus
+error_message = $?.success? ? nil : 'An error occurred while running the command'
     
     {
       stdout: stdout,
@@ -96,7 +98,7 @@ def generate_review_comment(dir, files)
       messages << projects_with_errors.map { |result| get_validation_message(result) }
     end
   else
-    messages = projects.map { |p| review_project(p) }.map { |r| get_validation_message(r) }
+    messages = projects.map { |result| get_validation_message(result) }
   end
 
   markdown_body + messages.join("\n\n")
@@ -137,16 +139,13 @@ def repository_check(project)
   if result[:rate_limited]
     # logger.info 'This script is currently rate-limited by the GitHub API'
     # logger.info 'Marking as inconclusive to indicate that no further work will be done here'
-    return nil
+    return {reason: 'archived', message: "The GitHub repository '#{project.github_owner_name_pair}' has been marked as archived, which suggests it is not active."} if result[:reason] == 'archived'
   end
 
-  return "The GitHub repository '#{project.github_owner_name_pair}' has been marked as archived, which suggests it is not active." if result[:reason] == 'archived'
-
-  return "The GitHub repository '#{project.github_owner_name_pair}' cannot be found. Please confirm the location of the project." if result[:reason] == 'missing'
-
-  return "The GitHub repository '#{result[:old_location]}' is now at '#{result[:location]}'. Please update this project before this is merged." if result[:reason] == 'redirect'
-
-  return "The GitHub repository '#{project.github_owner_name_pair}' could not be confirmed. Error details: #{result[:error]}" if result[:reason] == 'error'
+  return {reason: 'archived', message: "The GitHub repository '#{project.github_owner_name_pair}' has been marked as archived, which suggests it is not active."} if result[:reason] == 'archived'
+  return {reason: 'missing', message: "The GitHub repository '#{project.github_owner_name_pair}' cannot be found. Please confirm the location of the project."} if result[:reason] == 'missing'
+  return {reason: 'redirect', message: "The GitHub repository '#{result[:old_location]}' is now at '#{result[:location]}'. Please update this project before this is merged."} if result[:reason] == 'redirect'
+  return {reason: 'error', message: "The GitHub repository '#{project.github_owner_name_pair}' could not be confirmed. Error details: #{result[:error]}"} if result[:reason] == 'error'
 
   nil
 end
@@ -160,7 +159,7 @@ def label_validation_message(project)
     return { reason: :rate_limited }
   end
 
-  return "An error occurred while querying for the project label. Details: #{result[:error].inspect}" if result[:reason] == 'error'
+  return "An error occurred while querying for the project label. Error details: #{result[:error]}" if result[:reason] == 'error'
 
   if result[:reason] == 'repository-missing'
     return {
