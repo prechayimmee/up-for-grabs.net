@@ -6,11 +6,8 @@ require_relative 'review_changes'
 def fix_gha_helper_function1(param1, param2)
   # Implement the necessary logic to fix the GitHub Actions run failure
   #
-  # This function is responsible for...
-  # ...
-  # It takes...
-  # It returns...
-  #
+  # This function is responsible for fixing the GitHub Actions run failure
+  # Use param1 and param2 as needed to fix the GitHub Actions run failure
   #
 end
 
