@@ -168,7 +168,7 @@ def label_validation_message(project)
 
   return "An error occurred while querying for the project label. Details: #{result[:error].inspect}" if result[:reason] == 'error'
 
-  if result[:reason] == 'repository-missing'
+  if result.key?(:reason) && result.key?(:reason) && result[:reason] == 'repository-missing'
     return {
       reason: :error,
       message: "I couldn't find the GitHub repository '#{project.github_owner_name_pair}' that was used in the `upforgrabs.link` value. " \
