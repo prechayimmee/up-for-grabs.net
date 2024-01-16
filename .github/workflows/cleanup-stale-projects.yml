@@ -36,3 +36,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.SHIFTBOT_TOKEN }}
           APPLY_CHANGES: ${{ inputs.apply-changes }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.SHIFTBOT_TOKEN }}
+          APPLY_CHANGES: ${{ inputs.apply-changes }}
