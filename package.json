@@ -11,7 +11,7 @@
   "eslint-check": "eslint --print-config javascripts/main.js | eslint-config-prettier-check",
     "lint": "eslint javascripts/*.js tests/**/*.js",
     "lint-fix": "eslint --fix javascripts/*.js tests/**/*.js",
-    "prettier-fix": "prettier --write javascripts/*.js tests/**/*.js docs/**/*.md .github/**/*.md",
+    "test": "jest --config ./jest.config.js --verbose --coverage",
     "prettier-fix": "prettier --write javascripts/*.js tests/**/*.js docs/**/*.md .github/**/*.md",
     "test": "jest --config ./jest.config.js --verbose --coverage"
   },
