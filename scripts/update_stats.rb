@@ -10,7 +10,13 @@ require 'graphql/client/http'
 require 'up_for_grabs_tooling'
 
 def update(project, apply_changes: false)
-  # Add error handling for rate limiting
+    # Add error handling for rate limiting
+
+  if result[:rate_limited]
+    warn 'This script is currently rate-limited by the GitHub API'
+    warn 'Marking as inconclusive to indicate that no further work will be done here'
+    return if inconclusive_or_repository_missing(result)
+  end
 
   # Add error handling for rate limiting
   result = GitHubRepositoryLabelActiveCheck.run(project)
@@ -20,7 +26,10 @@ def update(project, apply_changes: false)
     return if inconclusive_or_repository_missing(result)
   end
 
-  # Handle missing repositories
+  if result[:reason] == 'repository-missing'
+    warn "The GitHub repository '#{project.github_owner_name_pair}' cannot be found. Please confirm the location of the project."
+    return if inconclusive_or_repository_missing(result)
+  end
   if result[:reason] == 'repository-missing'
     warn "The GitHub repository '#{project.github_owner_name_pair}' cannot be found. Please confirm the location of the project."
     return
@@ -125,6 +134,8 @@ warn "Inspecting projects files for '#{current_repo}'"
 
 start = Time.now
 
+new_pr_created = false
+
 root_directory = ENV.fetch('GITHUB_WORKSPACE', nil)
 apply_changes = ENV.fetch('APPLY_CHANGES', false)
 token = ENV.fetch('GITHUB_TOKEN', nil)
@@ -182,7 +193,7 @@ Dir.chdir(root_directory) do
 
   warn 'after git diff'
 
-  unless clean
+  if changed
     system("git checkout -b #{branch_name}")
     warn 'after git checkout'
     system('git add _data/projects/')
@@ -196,7 +207,7 @@ end
 
 if clean
   body = 'This PR regenerates the stats for all repositories that use a single label in a single GitHub repository'
-  client.create_pull_request(current_repo, 'gh-pages', branch_name, 'Updated project stats', body) if found_pr.nil?
+  client.create_pull_request(current_repo, 'main', branch_name, 'Updated project stats', body) unless new_pr_created
 end
 
 finish = Time.now
