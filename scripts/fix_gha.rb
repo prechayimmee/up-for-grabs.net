@@ -11,9 +11,8 @@
 # Parameters: List all the parameters and their types
 # Returns: Describe the return value and its type
 def fix_gha_function1(param1: Type1, param2: Type2)
-  # Fix the GitHub Actions run failure by implementing the necessary logic
-  # Provide specific details about the logic being added
-  # Return the appropriate value based on the logic implemented
+  # Add logic to fix the GitHub Actions run failure
+  # Return the appropriate value based on the added logic
 end
 
 # Function or class 2
@@ -22,9 +21,8 @@ end
 # Parameters: List all the parameters and their types
 # Returns: Describe the return value and its type
 def fix_gha_function2(param1: Type1, param2: Type2) # Update the parameter list to include the types of param1 and param2
-    # Fix the GitHub Actions run failure by implementing the necessary logic
-  # Provide specific details about the logic being added
-  # Return the appropriate value based on the logic implemented
+  # Add logic to fix the GitHub Actions run failure
+  # Return the appropriate value based on the added logic
 end
 
   # Additional functions or classes for fixing the GitHub Actions run failure
