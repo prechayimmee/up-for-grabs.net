@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'safe_yaml'
+require 'safe_yaml/load'
 require 'uri'
-require 'octokit'
+require 'webmock/rspec'
 require 'pathname'
 require 'graphql/client'
 require 'graphql/client/http'
@@ -12,7 +12,7 @@ require 'up_for_grabs_tooling'
 def update(project, apply_changes: false)
   return unless project.github_project?
 
-  result = GitHubRepositoryLabelActiveCheck.run(project)
+  result = UpForGrabsTooling::GitHubRepositoryLabelActiveCheck.run(project)
 
   warn "Project: #{project.github_owner_name_pair} returned #{result.inspect}"
 
