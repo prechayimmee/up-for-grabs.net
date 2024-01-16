@@ -14,7 +14,7 @@ require 'up_for_grabs_tooling'
 def run_command(cmd)
   begin
     output = `#{cmd}`
-exit_code = $?.exitstatus
+exit_code = status.exitstatus
 error_message = $?.success? ? nil : 'An error occurred while running the command'
     
     {
@@ -34,11 +34,11 @@ error_message = $?.success? ? nil : 'An error occurred while running the command
   end
 end
 
-FOUND_PROJECT_FILES_HEADER = ":wave: I'm a robot checking the state of this pull request to save the human reviewers time. " \
+FOUND_PROJECT_FILES_HEADER_MARKDOWN = ":wave: I'm a robot checking the state of this pull request to save the human reviewers time. " \
                              "I noticed this PR added or modififed the data files under `_data/projects/` so I had a look at what's changed." \
                              "\n\nAs you make changes to this pull request, I'll re-run these checks.\n\n"
 
-SKIP_PULL_REQUEST_MESSAGE = ":wave: I'm a robot checking the state of this pull request to save the human reviewers time. " \
+SKIP_PULL_REQUEST_MESSAGE_MARKDOWN = ":wave: I'm a robot checking the state of this pull request to save the human reviewers time. " \
                             "I don't see any changes under `_data/projects/` so I don't have any feedback here." \
                             "\n\nAs you make changes to this pull request, I'll re-run these checks.\n\n"
 
@@ -74,7 +74,7 @@ def generate_review_comment(dir, files)
 
   projects.compact!
 
-  markdown_body = FOUND_PROJECT_FILES_HEADER
+  markdown_body = FOUND_PROJECT_FILES_HEADER_MARKDOWN
 
   projects_without_valid_extensions = projects.reject { |p| ALLOWED_EXTENSIONS.include? File.extname(p.relative_path) }
 
@@ -107,18 +107,18 @@ end
 def review_project(project)
   validation_errors = SchemaValidator.validate(project)
 
-  return { project:, kind: 'validation', validation_errors: } if validation_errors.any?
+  return { project: project, kind: 'validation', validation_errors: validation_errors } if validation_errors.any?
 
   tags_errors = TagsValidator.validate(project)
 
-  return { project:, kind: 'tags', tags_errors: } if tags_errors.any?
+  return { project: project, kind: 'tags', tags_errors: tags_errors } if tags_errors.any?
 
   yaml = project.read_yaml
   link = yaml['upforgrabs']['link']
 
-  return { project:, kind: 'link-url', url: link } unless valid_url?(link)
+  return { project: project, kind: 'link-url', url: link } unless valid_url?(link)
 
-  return { project:, kind: 'valid' } unless project.github_project?
+  return { project: project, kind: 'valid' } unless project.github_project?
 
   repository_error = repository_check(project)
 
@@ -224,7 +224,7 @@ end
 
 def valid_url?(url)
   uri = URI.parse(url)
-  uri.is_a?(URI::HTTP) || uri.is_a?(URI::HTTPS)
+  (uri.scheme == 'http' || uri.scheme == 'https')
 rescue URI::InvalidURIError
   false
 end
