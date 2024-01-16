@@ -34,7 +34,8 @@ def update(project, apply_changes: false)
 
   if result[:reason] == 'error'
     warn "An error occurred: #{result[:error]}"
-    return
+    warn "Error occurred in project: #{project.github_owner_name_pair}"
+    next
   end
 
   obj = project.read_yaml
@@ -100,6 +101,7 @@ projects.each do |p|
   begin
     update(p, apply_changes:)
   rescue => e
+  project_logs << p
     warn "An error occurred while updating project: #{e.message}"
   end
 end
