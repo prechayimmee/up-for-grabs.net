@@ -37,7 +37,7 @@ end
 # Returns: Return value and its type
 # - Type of return value
 
-def fix_gha_function2(param1, param2)
+def fix_gha_function2(param1, param2, helper_func)
   # Implement the necessary logic to fix the GitHub Actions run failure
   #
   # This function is responsible for...
