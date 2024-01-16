@@ -120,6 +120,9 @@ define(['whatwg-fetch', 'promise-polyfill'], () => {
    */
   async function fetchIssueCount(ownerAndName, label) {
     const cached = getValue(ownerAndName);
+  const now = new Date();
+  const cacheTTL = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+  const yesterday = now - cacheTTL;
     const now = new Date();
 
     const yesterday = now - 1000 * 60 * 60 * 24;

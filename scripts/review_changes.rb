@@ -12,28 +12,112 @@ require 'open3'
 require 'up_for_grabs_tooling'
 
 def run_project_review(project)
-  validation_errors = SchemaValidator.validate(project)
+  FOUND_PROJECT_FILES_HEADER = ":wave: I'm a robot checking the state of this pull request to save the human reviewers time. " \
+                             "I noticed this PR added or modified the data files under `_data/projects/` so I had a look at what's changed." \
+                             "\n\nAs you make changes to this pull request, I'll re-run these checks.\n\n"
 
-  return { project:, kind: 'validation', validation_errors: } if validation_errors.any?
+SKIP_PULL_REQUEST_MESSAGE = ":wave: I'm a robot checking the state of this pull request to save the human reviewers time. " \
+                            "I don't see any changes under `_data/projects/` so I don't have any feedback here." \
+                            "\n\nAs you make changes to this pull request, I'll re-run these checks.\n\n"
 
-  tags_errors = TagsValidator.validate(project)
+ALLOWED_EXTENSIONS = ['.yml'].freeze
 
-  return { project:, kind: 'tags', tags_errors: } if tags_errors.any?
+def get_validation_message(result)
+  path = result[:project].relative_path
 
-  yaml = project.read_yaml
-  link = yaml['upforgrabs']['link']
+  case result[:kind]
+  when 'valid'
+    "#### `#{path}` :white_check_mark:\n#{result[:message]}"
+  when 'validation'
+    message = result[:validation_errors].map { |e| "> - #{e}" }.join "\n"
+    "#### `#{path}` :x:\nI had some troubles parsing the project file, or there were fields that are missing that I need.\n\nHere's the details:\n#{message}"
+  when 'tags'
+    message = result[:tags_errors].map { |e| "> - #{e}" }.join "\n"
+    "#### `#{path}` :x:\nI have some suggestions about the tags used in the project:\n\n#{message}"
+  when 'link-url'
+    "#### `#{path}` :x:\nThe `upforgrabs.url` value #{result[:url]} is not a valid URL - please check and update the value."
+  when 'repository', 'label'
+    "#### `#{path}` :x:\n#{result[:message]}"
+  else
+    "#### `#{path}` :question:\nI got a result of type '#{result[:kind]}' that I don't know how to handle. I need to mention @shiftkey here as he might be able to fix it."
+  end
+  { project:, kind:, message: label_result[:message] }
+def generate_review_comment(dir, files)
+  projects = files.map do |f|
+    full_path = File.join(dir, f)
 
-  return { project:, kind: 'link-url', url: link } unless valid_url?(link)
+    Project.new(f, full_path) if File.exist?(full_path)
+  end
 
-  return { project:, kind: 'valid' } unless project.github_project?
+  projects.compact!
 
-  repository_error = repository_check(project)
+  markdown_body = FOUND_PROJECT_FILES_HEADER
 
-  return { project:, kind: 'repository', message: repository_error } unless repository_error.nil?
+  projects_without_valid_extensions = projects.reject { |p| ALLOWED_EXTENSIONS.include? File.extname(p.relative_path) }
 
-  label_result = label_validation_message(project)
+  if projects_without_valid_extensions.any?
+    messages = ['#### Unexpected files found in project directory']
+    projects_without_valid_extensions.each do |p|
+      messages << " - `#{p.relative_path}`"
+    end
+    messages << 'All files under `_data/projects/` must end with `.yml` to be listed on the site'
+  elsif projects.count > 2
+    results = projects.map { |p| review_project(p) }
+    valid_projects, projects_with_errors = results.partition { |r| r[:kind] == 'valid' }
 
-  kind = label_result.key?(:reason) ? 'label' : 'valid'
+    if projects_with_errors.empty?
+      messages = [
+        "#### **#{valid_projects.count}** projects without issues :white_check_mark:",
+        'Everything should be good to merge!'
+      ]
+    else
+      messages = ["#### **#{valid_projects.count}** projects without issues :white_check_mark:"]
+      messages << projects_with_errors.map { |result| get_validation_message(result) }
+    end
+  else
+    messages = projects.map { |p| review_project(p) }.map { |r| get_validation_message(r) }
+  end
+
+  markdown_body + messages.join("\n\n")
+end
+def generate_review_comment(dir, files)
+  projects = files.map do |f|
+    full_path = File.join(dir, f)
+
+    Project.new(f, full_path) if File.exist?(full_path)
+  end
+
+  projects.compact!
+
+  markdown_body = FOUND_PROJECT_FILES_HEADER
+
+  projects_without_valid_extensions = projects.reject { |p| ALLOWED_EXTENSIONS.include? File.extname(p.relative_path) }
+
+  if projects_without_valid_extensions.any?
+    messages = ['#### Unexpected files found in project directory']
+    projects_without_valid_extensions.each do |p|
+      messages << " - `#{p.relative_path}`"
+    end
+    messages << 'All files under `_data/projects/` must end with `.yml` to be listed on the site'
+  elsif projects.count > 2
+    results = projects.map { |p| review_project(p) }
+    valid_projects, projects_with_errors = results.partition { |r| r[:kind] == 'valid' }
+
+    if projects_with_errors.empty?
+      messages = [
+        "#### **#{valid_projects.count}** projects without issues :white_check_mark:",
+        'Everything should be good to merge!'
+      ]
+    else
+      messages = ["#### **#{valid_projects.count}** projects without issues :white_check_mark:"]
+      messages << projects_with_errors.map { |result| get_validation_message(result) }
+    end
+  else
+    messages = projects.map { |p| review_project(p) }.map { |r| get_validation_message(r) }
+  end
+
+  markdown_body + messages.join("\n\n")
+end
 
   { project:, kind:, message: label_result[:message] }
 end
@@ -131,6 +215,8 @@ def review_project(project)
   label_result = label_validation_message(project)
 
   kind = label_result.key?(:reason) ? 'label' : 'valid'
+  { project: project, kind: kind, message: label_result[:message] }
+  { project:, kind:, message: label_result[:message] }
 
   { project:, kind:, message: label_result[:message] }
 end
