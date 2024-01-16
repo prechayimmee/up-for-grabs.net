@@ -42,5 +42,5 @@ jobs:
         run: |
           bundle install
           bundle exec rubocop
-          bundle exec jekyll build
+          bundle install && bundle exec rubocop && bundle exec jekyll build && bundle exec ruby scripts/validate_data_files.rb
           bundle exec ruby scripts/validate_data_files.rb
