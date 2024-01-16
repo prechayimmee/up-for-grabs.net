@@ -13,7 +13,7 @@ def update(project, apply_changes: false)
 
   # Add error handling for rate limiting
   result = GitHubRepositoryLabelActiveCheck.run(project)
-  if result[:rate_limited]
+  if result[:rate_limited] || result[:reason] == 'rate-limited'
     warn 'This script is currently rate-limited by the GitHub API'
     warn 'Marking as inconclusive to indicate that no further work will be done here'
     exit 0
@@ -41,6 +41,7 @@ def update(project, apply_changes: false)
     obj.store('upforgrabs', 'name' => label, 'link' => url)
   end
   if result[:last_updated].nil?
+    if result[:last_updated].nil?
     obj.store('stats',
               'issue-count' => result[:count],
               'fork-count' => result[:fork_count])
@@ -52,7 +53,7 @@ def update(project, apply_changes: false)
   end
   project.write_yaml(obj)
   result = GitHubRepositoryLabelActiveCheck.run(project)
-  return unless result[:rate_limited]
+  end
   warn 'This script is currently rate-limited by the GitHub API'
   warn 'Marking as inconclusive to indicate that no further work will be done here'
   exit 0
@@ -65,7 +66,7 @@ def update(project, apply_changes: false)
 
   warn "Project: #{project.github_owner_name_pair} returned #{result.inspect}"
 
-  if result[:rate_limited]
+  if result[:rate_limited] || result[:reason] == 'rate-limited'
     warn 'This script is currently rate-limited by the GitHub API'
     warn 'Marking as inconclusive to indicate that no further work will be done here'
     exit 0
