@@ -138,7 +138,8 @@ setup_git_config(root_directory)
 
   warn 'after git diff'
 
-    unless clean
+    # Add, commit, and push
+  unless clean
     system("git checkout -b #{branch_name}")
     warn 'after git checkout'
     system('git add _data/projects/')
