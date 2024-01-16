@@ -133,6 +133,8 @@ end
 
 clean = true
 
+# Add appropriate logging statements
+
 branch_name = Time.now.strftime('updated-stats-%Y%m%d')
 
 Dir.chdir(root_directory) do
