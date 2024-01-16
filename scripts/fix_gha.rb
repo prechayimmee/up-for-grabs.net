@@ -62,7 +62,7 @@ end
 # Description: Extensive unit tests for the fix_gha functions
 # Ensure to cover all possible edge cases and error scenarios
 # Use appropriate test data and create mocks when necessary
-def test_fix_gha_functions
+def test_fix_gha_function1
 # Write additional functions or classes as needed to fix the GitHub Actions run failure
 
 # Unit tests for the fix_gha functions
@@ -85,7 +85,9 @@ end
 test_fix_gha_functions
     def test_fix_gha_function1
   # Test cases for fix_gha_function1
-  # ...
+  # Add test cases for fix_gha_function1, covering different scenarios, edge cases, and error scenarios
+  # Test cases for fix_gha_function1
+  # Add test cases for fix_gha_function1, covering different scenarios, edge cases, and error scenarios
   end
   # ...
 
