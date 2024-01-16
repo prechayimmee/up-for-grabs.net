@@ -6,8 +6,10 @@ require 'webmock/rspec'
 require 'pathname'
 require 'graphql/client'
 require 'graphql/client/http'
-
 require 'up_for_grabs_tooling'
+
+require 'octokit'
+require 'project'
 
 def update(project, apply_changes: false)
   return unless project.github_project?
@@ -16,10 +18,9 @@ def update(project, apply_changes: false)
 
   warn "Project: #{project.github_owner_name_pair} returned #{result.inspect}"
 
-  if result[:rate_limited]
-    warn 'This script is currently rate-limited by the GitHub API'
-    warn 'Marking as inconclusive to indicate that no further work will be done here'
-    exit 0
+    rescue Exception => e
+    warn "An error occurred: "+e.message
+    exit 1
   end
 
   if result[:reason] == 'repository-missing'
