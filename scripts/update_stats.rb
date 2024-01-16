@@ -41,7 +41,7 @@ def update(project, apply_changes: false)
   obj = project.read_yaml
   label = obj['upforgrabs']['name']
 
-  if result[:reason] == 'missing'
+  if result[:reason] == 'missing-label'
     warn "The label '#{label}' for GitHub repository '#{project.github_owner_name_pair}' could not be found. Please ensure this points to a valid label used in the project."
     return
   end
@@ -50,7 +50,7 @@ def update(project, apply_changes: false)
 
   url = result[:url]
 
-  link_needs_rewriting = link != url && link.include?('/labels/')
+  needs_link_rewriting = link != url && link.include?('/labels/')
 
   unless apply_changes
     warn "The label link for '#{label}' in project '#{project.relative_path}' is out of sync with what is found in the 'upforgrabs' element. Ensure this is updated to '#{url}'" if link_needs_rewriting
