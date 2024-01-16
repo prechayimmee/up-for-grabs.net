@@ -118,8 +118,15 @@ define(['whatwg-fetch', 'promise-polyfill'], () => {
    *
    * @returns {number|string|null}
    */
-  async function fetchIssueCount(ownerAndName, label) { /* Add necessary logic to handle error or issue causing GitHub Actions run failure */
-  // Handle the error or issue related to fetching and caching the issue count using the GitHub API
+  async function fetchIssueCount(ownerAndName, label) { 
+  // Add necessary logic to handle error or issue causing GitHub Actions run failure
+  // Fetch and cache the issue count for the requested repository using the GitHub API
+  // This covers a whole bunch of scenarios:
+  //
+  //  - cached values are used if re-requested within the next 24 hours
+  //  - ETags are included on the request, if found in the cache
+  //  - Rate-limiting will report an error, and no further requests will be
+  //    made until that has period has elapsed.
     const cached = getValue(ownerAndName);
     const now = new Date();
 
