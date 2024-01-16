@@ -106,6 +106,11 @@ projects = Project.find_in_directory(root_directory)
 warn 'Iterating on project updates'
 
 projects.each do |p|
+end
+if projects.empty?
+  warn 'No projects were found in the root directory'
+  exit 0
+end
   begin
     puts 'Updating project: #{p.relative_path}'
 begin
