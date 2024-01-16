@@ -3,24 +3,20 @@
 require_relative 'update_stats'
 require_relative 'review_changes'
 
-def fix_gha_helper_function1(param1, param2)
+def fix_gha_helper_function1(error_logs, action)
   # Implement the necessary logic to fix the GitHub Actions run failure
-  #
-  # This function is responsible for...
-  # ...
-  # It takes...
-  # It returns...
+  # This function is responsible for handling the error_logs and taking action to fix the failure.
+  # It takes error_logs and action as parameters.
+  # It returns true if the fix is successful, otherwise false.
   #
   #
 end
 
-def fix_gha_helper_function2(param1, param2)
+def fix_gha_helper_function2(error_logs, action)
   # Implement the necessary logic to fix the GitHub Actions run failure
-  #
-  # This function is responsible for...
-  # ...
-  # It takes...
-  # It returns...
+  # This function is responsible for handling the error_logs and taking action to fix the failure.
+  # It takes error_logs and action as parameters.
+  # It returns true if the fix is successful, otherwise false.
   #
   #
 end
