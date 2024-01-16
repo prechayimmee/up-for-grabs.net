@@ -229,10 +229,10 @@ range = "#{base_sha}...#{head_sha}"
 if git_remote_url
   # fetching the fork repository so that our commits are in this repository
   # for processing and comparison with the base branch
-  remote_result = run_command "git -C '#{dir}' remote add fork #{git_remote_url} -f"
+  remote_result = run_command "git -C '#{dir}' remote add fork #{git_remote_url} "
 
   if remote_result[:exit_code] == 3
-    run "git -C '#{dir}' remote rm fork"
+    run_command "git -C '#{dir}' remote rm fork "
     remote_result = run "git -C '#{dir}' remote add fork #{git_remote_url} -f"
   end
 
@@ -246,7 +246,8 @@ end
     warn 'A git error occurred while trying to add the remote #{git_remote_url}'
     warn 'exit code: #{remote_result[:exit_code]}'
     warn 'stderr: #{remote_result[:stderr]}'
-    warn 'stdout: #{remote_result[:stdout]}' "A git error occurred while trying to add the remote #{git_remote_url}"
+    warn "stdout: '#{remote_result[:stdout]}"
+    warn "A git error occurred while trying to add the remote #{git_remote_url}"
     warn
     warn "exit code: #{remote_result[:exit_code]}"
     warn
@@ -278,7 +279,7 @@ if files.empty?
   return
 end
 
-result = run "git -C '#{dir}' checkout #{head_sha} --force"
+result = run_command "git -C '#{dir}' checkout #{head_sha} --force"
 unless result[:exit_code].zero?
   puts 'A problem occurred when trying to load this commit'
   return
