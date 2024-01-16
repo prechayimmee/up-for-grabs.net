@@ -28,6 +28,18 @@ def update(project, apply_changes: false)
   end
 
   if result[:reason] == 'issues-disabled'
+  if result[:reason] == 'missing'
+    warn "The label '#{label}' for GitHub repository '#{project.github_owner_name_pair}' could not be found. Please ensure this points to a valid label used in the project."
+    return
+  end
+  if result[:reason] == 'missing'
+    warn "The label '#{label}' for GitHub repository '#{project.github_owner_name_pair}' could not be found. Please ensure this points to a valid label used in the project."
+    return
+  end
+  if result[:reason] == 'missing'
+    warn "The label '#{label}' for GitHub repository '#{project.github_owner_name_pair}' could not be found. Please ensure this points to a valid label used in the project."
+    return
+  end
     warn "The GitHub repository '#{project.github_owner_name_pair}' has issues disabled, and should be cleaned up with the next deprecation run."
     return
   end

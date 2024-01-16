@@ -288,6 +288,8 @@ unless result[:exit_code].zero?
   return
 end
 
+error = result[:error]
+puts "An error occurred during the GitHub Actions run: #{error}"
 markdown_body = generate_review_comment(dir, files)
 
 puts markdown_body
