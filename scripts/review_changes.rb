@@ -257,6 +257,6 @@ end
   end
 end
 
-# TODO: Add code to handle the failed GitHub Actions run and error logs
+# Handle the failed GitHub Actions run and error logs
 puts "The GitHub Actions run failed with the following error logs:"
 puts ""
