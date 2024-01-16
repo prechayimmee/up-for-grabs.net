@@ -168,6 +168,20 @@ define(['whatwg-fetch', 'promise-polyfill'], () => {
       fetch(apiURL, settings).then(
         (response) => {
           if (!response.ok) {
+      if (response.status === 304) {
+        // no content is returned in the 304 Not Modified response body
+        const count = cached ? cached.count : 0;
+        resolve(count);
+        return;
+      }
+
+      clearValue(ownerAndName);
+
+      const rateLimitError = inspectRateLimitError(response);
+      if (rateLimitError) {
+        reject(rateLimitError);
+        return;
+      } else
             if (response.status === 304) {
               // no content is returned in the 304 Not Modified response body
               const count = cached ? cached.count : 0;
