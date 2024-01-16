@@ -2,6 +2,9 @@
 
 # Reference the existing dependencies from package.json
 gemspec
+gemspec
+
+gemspec
 
 source 'https://rubygems.org'
 
