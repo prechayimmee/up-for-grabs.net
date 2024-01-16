@@ -10,7 +10,12 @@ require 'graphql/client/http'
 require 'up_for_grabs_tooling'
 
 def update(project, apply_changes: false)
-  return unless project.github_project?
+  project_logs = []
+  begin
+  rescue => e
+    project_logs << project
+    warn "An error occurred while updating project: ", e.message
+    return unless project.github_project?
 
   result = UpForGrabsTooling::GitHubRepositoryLabelActiveCheck.run(project)
 
@@ -135,6 +140,9 @@ setup_git_config(root_directory)
   warn 'after git diff'
 
   unless clean
+  if project_logs.any?
+    warn "Errors occurred while updating the following projects:", project_logs.join(", ")
+  end
     system("git checkout -b #{branch_name}")
     warn 'after git checkout'
     system('git add _data/projects/')
