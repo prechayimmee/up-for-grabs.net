@@ -27,6 +27,10 @@ jobs:
           ruby-version: '3.2'
           bundler-cache: true
           cache-version: 0
+          bundler-cache: true
+          cache-version: 0
+          bundler-cache: true
+          cache-version: 0
       - name: Run script to cleanup inactive projects
         run: bundle exec ruby scripts/cleanup_projects.rb
         env:
