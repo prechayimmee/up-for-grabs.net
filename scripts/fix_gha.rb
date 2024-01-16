@@ -22,7 +22,7 @@ end
 # Description: Provide a description of what this function or class does
 # Parameters: List all the parameters and their types
 # Returns: Describe the return value and its type
-def fix_gha_function2(param1, param2)
+def fix_gha_function2(param1, param2, new_param3)
   # Implementation details
 end
 
