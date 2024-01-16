@@ -29,7 +29,7 @@ about managing our own servers, and can save time on the manual work that comes
 with a project of this size:
 
 - [GitHub Actions](https://github.com/features/actions) is used to automate various tasks such as updating project statistics, checking project activity, and more. It also includes error handling and error messages for better debugging. It runs every time you build or create a pull request to ensure the project is ready to be deployed.
-- [Netlify](https://www.netlify.com/) hooks check every pull request to test the deployment and give reviewers a preview of the changes, so they don't have to download and verify the changes locally.
+- [Netlify](https://www.netlify.com/) hooks check every pull request to test the deployment and give reviewers a preview of the changes..
 - When you push a commit to the `gh-pages` branch, a deployment is started to publish the latest code to [GitHub Pages](https://pages.github.com/), which
   hosts the site
 - A GitHub Action, using the 'update_stats.rb' script, runs weekly to scan the project list and remove any projects that are no longer active by checking if they are still accessible via the GitHub API. This saves us from having to manually review projects for inactivity.
