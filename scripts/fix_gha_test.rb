@@ -5,7 +5,12 @@ require_relative 'fix_gha'
 # Unit tests for the fix_gha functions
 # Ensure to cover all possible edge cases and error scenarios
 # Use appropriate test data and create mocks when necessary
-def test_fix_gha_functions
+def test_fix_gha_functions_with_tests_with_tests
+  # Add test cases to cover all possible edge cases and error scenarios
+  # Use appropriate test data and create mocks when necessary
+  # Test cases for fix_gha_function1
+
+  # Test cases for fix_gha_function2
   # Test cases for fix_gha_function1
 # Add test cases to cover all possible edge cases and error scenarios
 # Use appropriate test data and create mocks when necessary
