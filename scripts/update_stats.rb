@@ -17,13 +17,13 @@ def update(project, apply_changes: false)
   warn "Project: #{project.github_owner_name_pair} returned #{result.inspect}"
 
   if result[:rate_limited]
-    warn 'This script is currently rate-limited by the GitHub API'
+    warn 'The GitHub Actions run has been rate-limited. No further work will be done here.'
     warn 'Marking as inconclusive to indicate that no further work will be done here'
     exit 0
   end
 
   if result[:reason] == 'repository-missing'
-    warn "The GitHub repository '#{project.github_owner_name_pair}' cannot be found. Please confirm the location of the project."
+    warn "The GitHub repository '#{project.github_owner_name_pair}'! Please confirm the location of the project."
     return
   end
 
@@ -32,7 +32,7 @@ def update(project, apply_changes: false)
     return
   end
 
-  if result[:reason] == 'error'
+  if result[:reason] == 'api-request-error'
     warn "An error occurred: #{result[:error]}"
     warn "Error occurred in project: #{project.github_owner_name_pair}"
     next
@@ -41,7 +41,7 @@ def update(project, apply_changes: false)
   obj = project.read_yaml
   label = obj['upforgrabs']['name']
 
-  if result[:reason] == 'missing'
+  if result[:reason] == 'missing-label'
     warn "The label '#{label}' for GitHub repository '#{project.github_owner_name_pair}' could not be found. Please ensure this points to a valid label used in the project."
     return
   end
@@ -50,14 +50,18 @@ def update(project, apply_changes: false)
 
   url = result[:url]
 
-  link_needs_rewriting = link != url && link.include?('/labels/')
+  needs_link_rewriting = link != url && link.include?('/labels/')
 
   unless apply_changes
-    warn "The label link for '#{label}' in project '#{project.relative_path}' is out of sync with what is found in the 'upforgrabs' element. Ensure this is updated to '#{url}'" if link_needs_rewriting
+    warn "The label link for '#{label}' in project '#{project.relative_path}' is out of sync with what is found in the 'upforgrabs' element. Ensure this is updated to '#{url}'" if needs_link_rewriting
+    warn "The label link for '#{label}' in project '#{project.relative_path}' needs to be updated to '#{url}'" if needs_link_rewriting
     return
   end
 
-  obj.store('upforgrabs', 'name' => label, 'link' => url) if link_needs_rewriting
+  if needs_link_rewriting
+  obj.store('upforgrabs', 'name' => label, 'link' => url)
+  obj.store('stats', 'issue-count' => result[:count], 'fork-count' => result[:fork_count])
+end
 
   if result[:last_updated].nil?
     obj.store('stats',
@@ -108,8 +112,8 @@ end
 
 warn 'Completed iterating on project updates'
 
-unless apply_changes
-  warn 'APPLY_CHANGES environment variable unset, exiting instead of making a new PR'
+unless ENV['APPLY_CHANGES']
+  warn 'APPLY_CHANGES environment variable is unset or has an invalid value, exiting instead of making a new PR'
   exit 0
 end
 
@@ -134,6 +138,7 @@ setup_git_config(root_directory)
 
   warn 'after git diff'
 
+    # Add, commit, and push
   unless clean
     system("git checkout -b #{branch_name}")
     warn 'after git checkout'

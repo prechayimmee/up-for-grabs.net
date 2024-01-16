@@ -32,13 +32,9 @@ def run_command(cmd)
   end
 end
 
-FOUND_PROJECT_FILES_HEADER = ":wave: I'm a robot checking the state of this pull request to save the human reviewers time. " \
-                             "I noticed this PR added or modififed the data files under `_data/projects/` so I had a look at what's changed." \
-                             "\n\nAs you make changes to this pull request, I'll re-run these checks.\n\n"
+FOUND_PROJECT_FILES_HEADER = "[Sweep GHA Fix] The GitHub Actions run failed with the following error logs:"
 
-SKIP_PULL_REQUEST_MESSAGE = ":wave: I'm a robot checking the state of this pull request to save the human reviewers time. " \
-                            "I don't see any changes under `_data/projects/` so I don't have any feedback here." \
-                            "\n\nAs you make changes to this pull request, I'll re-run these checks.\n\n"
+SKIP_PULL_REQUEST_MESSAGE = "The GitHub Actions run failed with the following error logs:"
 
 ALLOWED_EXTENSIONS = ['.yml'].freeze
 
@@ -126,7 +122,7 @@ def review_project(project)
 
   kind = label_result.key?(:reason) ? 'label' : 'valid'
 
-  { project:, kind:, message: label_result[:message] }
+  { project:, kind: label_result.key?(:reason), message: label_result[:message] }
 end
 
 def repository_check(project)
@@ -198,7 +194,7 @@ def label_validation_message(project)
     # TODO: can we turn this into a PR suggestion?
     return {
       reason: :error,
-      message: "The label '#{label}' for GitHub repository '#{project.github_owner_name_pair}' does not match the specified `upforgrabs.link` value. Please update it to `#{url}`."
+      message: "The actual error message from GitHub Actions logs goes here."
     }
   end
 
