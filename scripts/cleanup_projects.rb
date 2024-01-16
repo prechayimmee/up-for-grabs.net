@@ -31,7 +31,7 @@ end
 
 def cleanup_deprecated_projects(root, current_repo, projects, apply_changes)
   token = ENV.fetch('GITHUB_TOKEN', nil)
-faraday = Faraday.new
+faraday = Faraday.new url: 'https://api.github.com'
 faraday.use Faraday::Request::Retry
 
   client = Octokit::Client.new(access_token: token)
