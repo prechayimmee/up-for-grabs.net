@@ -11,7 +11,7 @@ require 'open3'
 
 require 'up_for_grabs_tooling'
 
-def run_command(cmd)
+def run_command(command)
   begin
     stdout, stderr, status = Open3.capture3(cmd)
     
@@ -63,7 +63,7 @@ def get_validation_message(result)
   end
 end
 
-def generate_review_comment(dir, files)
+def generate_review_comment(directory, files)
   projects = files.map do |f|
     full_path = File.join(dir, f)
 
@@ -103,11 +103,11 @@ def generate_review_comment(dir, files)
 end
 
 def review_project(project)
-  validation_errors = SchemaValidator.validate(project)
+  validation_errors = validate_schema(project)
 
   return { project:, kind: 'validation', validation_errors: } if validation_errors.any?
 
-  tags_errors = TagsValidator.validate(project)
+  tags_errors = validate_tags(project)
 
   return { project:, kind: 'tags', tags_errors: } if tags_errors.any?
 
@@ -122,9 +122,9 @@ def review_project(project)
 
   return { project:, kind: 'repository', message: repository_error } unless repository_error.nil?
 
-  label_result = label_validation_message(project)
+  label_result = validate_label(project)
 
-  kind = label_result.key?(:reason) ? 'label' : 'valid'
+  kind = label_kind(label_result)
 
   { project:, kind:, message: label_result[:message] }
 end
@@ -160,7 +160,7 @@ def label_validation_message(project)
     return { reason: :rate_limited }
   end
 
-  return "An error occurred while querying for the project label. Details: #{result[:error].inspect}" if result[:reason] == 'error'
+  return "An error occurred while querying for the project label." if result[:reason] == 'error'
 
   if result[:reason] == 'repository-missing'
     return {
@@ -288,8 +288,10 @@ unless result[:exit_code].zero?
   return
 end
 
+raise_workflow_status_error(err_message, files)
+
 markdown_body = generate_review_comment(dir, files)
 
 puts markdown_body
 
-exit 0
+exit 1
