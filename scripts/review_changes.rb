@@ -133,6 +133,11 @@ def repository_check(project)
   # TODO: this looks for GITHUB_TOKEN underneath - it should not be hard-coded like this
   # TODO: cleanup the GITHUB_TOKEN setting once this is decoupled from the environment variable
   result = GitHubRepositoryActiveCheck.run(project)
+  if result[:rate_limited]
+    warn 'This script is currently rate-limited by the GitHub API'
+    warn 'Marking as inconclusive to indicate that no further work will be done here'
+    return {rate_limited: true}
+  end
 
   if result[:rate_limited]
     # logger.info 'This script is currently rate-limited by the GitHub API'
@@ -261,14 +266,12 @@ end
 
 result = run_command "git -C '#{dir}' diff #{range} --name-only -- _data/projects/"
 unless result[:exit_code].zero?
-  puts 'I was unable to perform the comparison due to a git error'
-  puts 'Check the workflow run to see more information about this error'
-
+  puts 'An error occurred while trying to perform the comparison.'
+  err_message = 'Check the workflow run to see more information about this error'
   warn 'A git error occurred while trying to diff the two commits'
-  warn
-  warn "stderr: '#{result[:stderr]}'"
-  warn
-  warn "stdout: '#{result[:stdout]}'"
+  warn 'stderr: #{result[:stderr]}'
+  warn 'stdout: #{result[:stdout]}'
+  warn err_message
   return
 end
 
