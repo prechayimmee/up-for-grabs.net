@@ -78,14 +78,18 @@ warn "Inspecting projects files for '#{current_repo}'"
 
 start = Time.now
 
-root_directory = ENV.fetch('GITHUB_WORKSPACE', nil)
-apply_changes = ENV.fetch('APPLY_CHANGES', false)
-token = ENV.fetch('GITHUB_TOKEN', nil)
+root_directory = Dir.pwd
+apply_changes = ENV['APPLY_CHANGES'] == 'true'
+token = ENV['GITHUB_TOKEN']
 
-client = Octokit::Client.new(access_token: token)
+client = Octokit::Client.new(bearer_token: token)
 prs = client.pulls current_repo
 
-found_pr = prs.find { |pr| pr.title == 'Updated project stats' && pr.user.login == 'shiftbot' }
+if projects.empty?
+  warn 'No projects found in the root directory'
+  exit 0
+end
+found_pr = prs.find { |pr| pr.title == 'Updated project stats' && pr.user.login == 'shiftbot' && pr.state == 'open' }
 
 if found_pr
   warn "There is a current PR open to update stats ##{found_pr.number} - review and merge that before we go again"
@@ -116,31 +120,33 @@ clean = true
 branch_name = Time.now.strftime('updated-stats-%Y%m%d')
 
 Dir.chdir(root_directory) do
-  warn 'before setting git config changes'
+  puts 'Before setting git config changes'
   system('git config --global user.name "shiftbot"')
   system('git config --global user.email "12331315+shiftbot@users.noreply.github.com"')
 
-  warn 'after setting git config changes'
+  puts 'After setting git config changes'
 
   system("git remote set-url origin 'https://x-access-token:#{token}@github.com/#{current_repo}.git'")
   # Git now warns when the remote URL is changed, and we need to opt-in for continuing to work with this repository
   system("git config --global --add safe.directory #{Dir.pwd}")
 
-  warn 'after changing git remote url'
+  puts 'After changing git remote url'
 
   clean = system('git diff --quiet > /dev/null')
 
-  warn 'after git diff'
+changes_exist = !clean
+
+  puts 'After git diff'
 
   unless clean
     system("git checkout -b #{branch_name}")
-    warn 'after git checkout'
+    puts 'After git checkout'
     system('git add _data/projects/')
-    warn 'after git add'
+    puts 'After git add'
     system("git commit -m 'regenerated project stats'")
-    warn 'after git commit'
+    puts 'After git commit'
     system("git push origin #{branch_name}")
-    warn 'after git push'
+    puts 'After git push'
   end
 end
 
