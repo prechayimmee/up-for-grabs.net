@@ -117,20 +117,20 @@ clean = true
 
 branch_name = Time.now.strftime('updated-stats-%Y%m%d')
 
-Dir.chdir(root_directory) do
+setup_git_config(root_directory)
   warn 'before setting git config changes'
-  system('git config --global user.name "shiftbot"')
-  system('git config --global user.email "12331315+shiftbot@users.noreply.github.com"')
+  set_git_config_username
+  set_git_config_useremail
 
   warn 'after setting git config changes'
 
-  system("git remote set-url origin 'https://x-access-token:#{token}@github.com/#{current_repo}.git'")
+  set_git_remote_url(token, current_repo)
   # Git now warns when the remote URL is changed, and we need to opt-in for continuing to work with this repository
-  system("git config --global --add safe.directory #{Dir.pwd}")
+  add_safe_directory
 
   warn 'after changing git remote url'
 
-  clean = system('git diff --quiet > /dev/null')
+  check_clean_state
 
   warn 'after git diff'
 
