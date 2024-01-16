@@ -2,6 +2,7 @@
 
 require 'safe_yaml/load'
 require 'uri'
+require 'octokit'
 require 'webmock/rspec'
 require 'pathname'
 require 'graphql/client'
@@ -72,10 +73,14 @@ def update(project, apply_changes: false)
   project.write_yaml(obj)
 end
 
-current_repo = ENV.fetch('GITHUB_REPOSITORY', nil)
+current_repo = ENV.fetch('GITHUB_REPOSITORY', '').split('/').last
 
 warn "Inspecting projects files for '#{current_repo}'"
 
+if current_repo.nil?
+  warn 'GITHUB_REPOSITORY environment variable is not set'
+  exit 1
+end
 start = Time.now
 
 root_directory = Dir.pwd
@@ -102,7 +107,13 @@ warn 'Iterating on project updates'
 
 projects.each do |p|
   begin
-    update(p, apply_changes:)
+    puts 'Updating project: #{p.relative_path}'
+begin
+  update(p, apply_changes: apply_changes)
+  puts 'Updated project: #{p.relative_path}'
+rescue => e
+  warn "An error occurred while updating project '#{p.relative_path}': #{e.message}"
+end
   rescue => e
     warn "An error occurred while updating project: #{e.message}"
   end
