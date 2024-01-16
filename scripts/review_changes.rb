@@ -257,35 +257,6 @@ end
   end
 end
 
-result = run_command "git -C '#{dir}' diff #{range} --name-only -- _data/projects/"
-if result[:exit_code] != 0
-  puts 'I was unable to perform the comparison due to a git error'
-  puts 'Check the workflow run to see more information about this error'
-
-  warn 'A git error occurred while trying to diff the two commits'
-  warn
-  warn "stderr: '#{result[:stderr]}'"
-  warn
-  warn "stdout: '#{result[:stdout]}'"
-end
-
-raw_files = result[:stdout].split("\n")
-
-files = raw_files.map(&:chomp)
-
-if files.empty?
-  puts SKIP_PULL_REQUEST_MESSAGE
-  return
-end
-
-result = run "git -C '#{dir}' checkout #{head_sha} --force"
-unless result[:exit_code].zero?
-  puts 'A problem occurred when trying to load this commit'
-  return
-end
-
-markdown_body = generate_review_comment(dir, files)
-
-puts markdown_body
-
-exit 0
+# TODO: Add code to handle the failed GitHub Actions run and error logs
+puts "The GitHub Actions run failed with the following error logs:"
+puts ""
