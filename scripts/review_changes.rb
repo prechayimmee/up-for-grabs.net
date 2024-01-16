@@ -66,7 +66,7 @@ def get_validation_message(result)
     "#### `#{path}` :x:\n#{result[:message]}"
   else
     "#### `#{path}` :question:\nI got a result of type '#{result[:kind]}' that I don't know how to handle. I need to mention @shiftkey here as he might be able to fix it."
-  end
+    end
 end
 
 def generate_review_comment(dir, files)
