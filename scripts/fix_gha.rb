@@ -13,14 +13,13 @@ require_relative 'scripts/review_changes'
 # Returns: Return value and its type
 # - Type of return value
 
-def fix_gha_function1(param1, param2)
+def fix_gha_function1(run_failure_data)
   # Implement the necessary logic to fix the GitHub Actions run failure
   #
-  # This function is responsible for...
-  # ...
-  # It takes...
-  # It returns...
-  #
+  # This function is responsible for fixing the GitHub Actions run failure based on the provided run_failure_data.
+  # Parameters:
+  # - run_failure_data: Data containing information about the GitHub Actions run failure
+  # Returns: Updated data after fixing the GitHub Actions run failure
   #
 end
 
