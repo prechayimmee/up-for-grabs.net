@@ -4,7 +4,7 @@ require 'up_for_grabs_tooling'
 
 root = Pathname.new(File.dirname(__dir__))
 
-result = CommandLineValidator.validate(root)
+result = ValidateDataFiles.validate(root)
 
 CommandLineFormatter.output(result)
 
