@@ -78,8 +78,8 @@ warn "Inspecting projects files for '#{current_repo}'"
 
 start = Time.now
 
-root_directory = ENV.fetch('GITHUB_WORKSPACE', nil)
-apply_changes = ENV.fetch('APPLY_CHANGES', false)
+root_directory = Dir.pwd
+apply_changes = ENV['APPLY_CHANGES'] == 'true'
 token = ENV.fetch('GITHUB_TOKEN', nil)
 
 client = Octokit::Client.new(access_token: token)
