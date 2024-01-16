@@ -90,6 +90,7 @@ found_pr = prs.find { |pr| pr.title == 'Updated project stats' && pr.user.login 
 if found_pr
   warn "There is a current PR open to update stats ##{found_pr.number} - review and merge that before we go again"
   exit 0
+  found_pr_exists = true
 end
 
 projects = Project.find_in_directory(root_directory)
@@ -147,11 +148,15 @@ end
 unless clean
   body = 'This PR regenerates the stats for all repositories that use a single label in a single GitHub repository'
 
-  client.create_pull_request(current_repo, 'gh-pages', branch_name, 'Updated project stats', body) if found_pr.nil?
+  body = 'This PR regenerates the stats for all repositories that use a single label in a single GitHub repository'
+
+client.create_pull_request(current_repo, 'gh-pages', branch_name, 'Updated project stats', body) if !clean
 end
 
 finish = Time.now
 delta = finish - start
+
+warn "Operation took #{delta}s"
 
 warn "Operation took #{delta}s"
 
