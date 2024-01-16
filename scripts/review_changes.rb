@@ -65,7 +65,7 @@ def get_validation_message(result)
   end
 end
 
-def generate_review_comment(dir, files)
+def generate_review_comment_for_project_files(project_files)
   projects = files.map do |f|
     full_path = File.join(dir, f)
 
@@ -120,7 +120,7 @@ def review_project(project)
 
   return { project: project, kind: 'valid' } unless project.github_project?
 
-  repository_error = repository_check(project)
+  issue_message = get_issue_message(project)
 
   return { project:, kind: 'repository', message: repository_error } unless repository_error.nil?
 
@@ -131,7 +131,7 @@ def review_project(project)
   { project:, kind:, message: label_result[:message] }
 end
 
-def repository_check(project)
+def validate_repository(project)
   # TODO: this looks for GITHUB_TOKEN underneath - it should not be hard-coded like this
   # TODO: cleanup the GITHUB_TOKEN setting once this is decoupled from the environment variable
   result = GitHubRepositoryActiveCheck.run(project)
