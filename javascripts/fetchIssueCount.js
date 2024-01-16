@@ -180,7 +180,7 @@ define(['whatwg-fetch', 'promise-polyfill'], () => {
             if (rateLimitError) {
                   reject({count: null, error: rateLimitError});
                   return;
-              reject(rateLimitError);
+              clearValue(ownerAndName); reject({ count: null, error: rateLimitError });
               return;
             }
 
