@@ -32,7 +32,7 @@ def update(project, apply_changes: false)
     return
   end
 
-  if result[:reason] == 'error'
+  if result[:reason] == 'api-request-error'
     warn "An error occurred: #{result[:error]}"
     warn "Error occurred in project: #{project.github_owner_name_pair}"
     next
