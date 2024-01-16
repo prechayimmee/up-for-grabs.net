@@ -9,7 +9,10 @@ require 'graphql/client/http'
 
 require 'github_repository_label_active_check'
 
-def update(project, apply_changes: false)
+  def update(project, apply_changes: false)
+  
+  remote_result = nil
+  
   return unless project.github_project?
 
   result = GitHubRepositoryValidationCheck.run(project)
