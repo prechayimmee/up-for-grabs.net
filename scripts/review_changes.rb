@@ -12,13 +12,22 @@ require 'open3'
 require 'up_for_grabs_tooling'
 
 def run_command(cmd)
-  stdout, stderr, status = Open3.capture3(cmd)
+  begin
+    stdout, stderr, status = Open3.capture3(cmd)
 
-  {
-    stdout:,
-    stderr:,
-    exit_code: status.exitstatus
-  }
+    {
+      stdout: stdout,
+      stderr: stderr,
+      exit_code: status.exitstatus
+    }
+  rescue Exception => e
+    warn "An error occurred while running the command: #{e.message}"
+    {
+      stdout: '',
+      stderr: e.message,
+      exit_code: 1
+    }
+  end
 end
 
 FOUND_PROJECT_FILES_HEADER = ":wave: I'm a robot checking the state of this pull request to save the human reviewers time. " \
