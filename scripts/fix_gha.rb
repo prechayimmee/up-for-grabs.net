@@ -61,6 +61,12 @@ end
 def test_fix_gha_functions
   # Test cases for fix_gha_function1
   # ...
+  
+  # Test cases for fix_gha_function2
+  # Description: Add appropriate test data and mocks for fix_gha_function2
+  # ...
+  # Test cases for fix_gha_function1
+  # ...
 
   # Test cases for fix_gha_function2
 # Description: Add appropriate test data and mocks for fix_gha_function2
