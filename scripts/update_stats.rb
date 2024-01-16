@@ -26,7 +26,10 @@ def update(project, apply_changes: false)
     return if inconclusive_or_repository_missing(result)
   end
 
-  # Handle missing repositories
+  if result[:reason] == 'repository-missing'
+    warn "The GitHub repository '#{project.github_owner_name_pair}' cannot be found. Please confirm the location of the project."
+    return if inconclusive_or_repository_missing(result)
+  end
   if result[:reason] == 'repository-missing'
     warn "The GitHub repository '#{project.github_owner_name_pair}' cannot be found. Please confirm the location of the project."
     return
