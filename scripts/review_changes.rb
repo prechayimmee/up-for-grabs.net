@@ -233,7 +233,7 @@ if git_remote_url
 
   if remote_result[:exit_code] == 3
     run_command "git -C '#{dir}' remote rm fork "
-    remote_result = run "git -C '#{dir}' remote add fork #{git_remote_url} -f"
+    remote_result = run_command "git -C '#{dir}' remote add fork #{git_remote_url} -f"
   end
 
   if remote_result[:exit_code] != 0
@@ -289,4 +289,8 @@ markdown_body = generate_review_comment(dir, files)
 
 puts markdown_body
 
-exit 0
+if result[:exit_code].zero?
+  exit 0
+else
+  puts 'A problem occurred when trying to load this commit'
+end
