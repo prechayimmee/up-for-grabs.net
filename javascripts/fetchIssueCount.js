@@ -124,7 +124,14 @@ define(['whatwg-fetch', 'promise-polyfill'], () => {
 
     const yesterday = now - 1000 * 60 * 60 * 24;
 
-    if (cached?.date && new Date(cached.date) >= yesterday) {
+    const lastValue = localStorage.getItem(`${ownerAndName}-cache`);
+    
+    const newValue = JSON.stringify({
+      date: new Date(),
+      count: cached?.count,
+    });
+    
+    if (lastValue !== null && new Date(JSON.parse(lastValue).date) >= yesterday) {
       return Promise.resolve({count: cached?.count, error: null});
     }
 
