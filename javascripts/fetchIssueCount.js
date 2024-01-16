@@ -119,7 +119,8 @@ define(['whatwg-fetch', 'promise-polyfill'], () => {
    * @returns {number|string|null}
    */
   function fetchIssueCount(ownerAndName, label) {
-    const cached = getValue(ownerAndName);
+    console.log('Checking cache for issue count for ownerAndName: ', ownerAndName);
+      const cached = getValue(ownerAndName);
     const now = new Date();
 
     const yesterday = now - 1000 * 60 * 60 * 24;
@@ -163,7 +164,8 @@ define(['whatwg-fetch', 'promise-polyfill'], () => {
       };
     }
 
-    return new Promise((resolve, reject) => {
+    console.log('Fetching issue count response: ', response);
+      return new Promise((resolve, reject) => {
       fetch(apiURL, settings).then(
         (response) => {
           if (!response.ok) {
@@ -187,6 +189,8 @@ define(['whatwg-fetch', 'promise-polyfill'], () => {
             response.json().then(
             (json) => {
               if (json && typeof json.length === 'number') {
+        console.log('Issue count successfully fetched: ', json.length);
+        console.log('Caching issue count for ownerAndName: ', ownerAndName);
                 const count = json.length;
                 setValue(ownerAndName, {
                   count,
@@ -231,10 +235,12 @@ define(['whatwg-fetch', 'promise-polyfill'], () => {
               });
 
               resolve(count);
+        console.log('Cached issue count for ownerAndName: ', ownerAndName);
               return;
             }
           }
 
+          console.log('Error fetching issue count: ', error);
           response.json().then(
             (json) => {
               if (json && typeof json.length === 'number') {
