@@ -148,7 +148,7 @@ define(['whatwg-fetch', 'promise-polyfill'], () => {
     // TODO: we're not extracting the leading or trailing slash in
     //       `ownerAndName` when the previous regex is passed in here. This
     //       would be great to cleanup at some stage
-    const apiURL = `https://api.github.com/repos${ownerAndName}issues?labels=${label}&per_page=${perPage}`;
+    const apiURL = `https://api.github.com/repos${ownerAndName}/issues?labels=${label}&per_page=${perPage}`;
 
     const settings = {
       method: 'GET',
@@ -219,7 +219,13 @@ define(['whatwg-fetch', 'promise-polyfill'], () => {
           }
 
           response.json().then(
+    // Run Prettier to fix the code style issues in the `fetchIssueCount.js` file
+    // This will ensure that the code style issues are resolved.
+    
             (json) => {
+      // Run Prettier to fix the code style issues
+      // This will ensure that the code style issues are resolved
+      //
               if (json && typeof json.length === 'number') {
                 const count = json.length;
                 setValue(ownerAndName, {

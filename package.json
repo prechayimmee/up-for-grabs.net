@@ -12,7 +12,7 @@
     "lint-fix": "eslint --fix javascripts/*.js tests/**/*.js",
     "prettier": "prettier --check javascripts/*.js tests/**/*.js docs/**/*.md .github/**/*.md",
     "prettier-fix": "prettier --write javascripts/*.js tests/**/*.js docs/**/*.md .github/**/*.md",
-    "test": "jest --config ./jest.config.js --verbose --coverage"
+    "test": "jest --config ./jest.config.js --verbose --coverage"},{"section_id":"A","old_code":""test": "jest --config ./jest.config.js --verbose --coverage"","new_code":""test": "jest --config ./jest.config.js --verbose --coverage","\n    \"ci\": \"npm ci\""
   },
   "engines": {
     "node": ">=16",
