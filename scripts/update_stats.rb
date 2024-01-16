@@ -156,7 +156,7 @@ changes_exist = !clean
 
   puts 'After git diff'
 
-  unless clean
+  if !clean
     system("git checkout -b #{branch_name}")
     puts 'After git checkout'
     system('git add _data/projects/')
