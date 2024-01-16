@@ -262,7 +262,6 @@ result = run_command "git -C '#{dir}' diff #{range} --name-only -- _data/project
 if result[:exit_code] != 0
   puts 'I was unable to perform the comparison due to a git error'
   puts 'Check the workflow run to see more information about this error'
-
   warn 'A git error occurred while trying to diff the two commits'
   warn
   warn "stderr: '#{result[:stderr]}'"
