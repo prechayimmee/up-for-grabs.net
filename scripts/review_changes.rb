@@ -11,7 +11,7 @@ require 'open3'
 
 require 'up_for_grabs_tooling'
 
-def run(cmd)
+def run_command(cmd)
   stdout, stderr, status = Open3.capture3(cmd)
 
   {
@@ -229,7 +229,7 @@ range = "#{base_sha}...#{head_sha}"
 if git_remote_url
   # fetching the fork repository so that our commits are in this repository
   # for processing and comparison with the base branch
-  remote_result = run "git -C '#{dir}' remote add fork #{git_remote_url} -f"
+  remote_result = run_command "git -C '#{dir}' remote add fork #{git_remote_url} -f"
 
   if remote_result[:exit_code] == 3
     run "git -C '#{dir}' remote rm fork"
@@ -248,7 +248,7 @@ if git_remote_url
   end
 end
 
-result = run "git -C '#{dir}' diff #{range} --name-only -- _data/projects/"
+result = run_command "git -C '#{dir}' diff #{range} --name-only -- _data/projects/"
 unless result[:exit_code].zero?
   puts 'I was unable to perform the comparison due to a git error'
   puts 'Check the workflow run to see more information about this error'
