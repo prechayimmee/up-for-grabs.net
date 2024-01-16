@@ -53,7 +53,8 @@ def update(project, apply_changes: false)
   needs_link_rewriting = link != url && link.include?('/labels/')
 
   unless apply_changes
-    warn "The label link for '#{label}' in project '#{project.relative_path}' is out of sync with what is found in the 'upforgrabs' element. Ensure this is updated to '#{url}'" if link_needs_rewriting
+    warn "The label link for '#{label}' in project '#{project.relative_path}' is out of sync with what is found in the 'upforgrabs' element. Ensure this is updated to '#{url}'" if needs_link_rewriting
+    warn "The label link for '#{label}' in project '#{project.relative_path}' needs to be updated to '#{url}'" if needs_link_rewriting
     return
   end
 
