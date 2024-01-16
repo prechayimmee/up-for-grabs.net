@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-# Import necessary files and entities from `scripts/update_stats.rb` and `scripts/review_changes.rb`
+require_relative 'scripts/update_stats'
+require_relative 'scripts/review_changes'
 
 # Implement the necessary logic to fix the GitHub Actions run failure
 
