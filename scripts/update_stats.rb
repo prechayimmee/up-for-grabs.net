@@ -85,6 +85,10 @@ token = ENV['GITHUB_TOKEN']
 client = Octokit::Client.new(bearer_token: token)
 prs = client.pulls current_repo
 
+if projects.empty?
+  warn 'No projects found in the root directory'
+  exit 0
+end
 found_pr = prs.find { |pr| pr.title == 'Updated project stats' && pr.user.login == 'shiftbot' && pr.state == 'open' }
 
 if found_pr
