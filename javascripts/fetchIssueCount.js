@@ -1,8 +1,7 @@
 /* eslint global-require: "off" */
 /* eslint block-scoped-var: "off" */
-
-/* eslint function-paren-newline: [ "off" ] */
-/* eslint implicit-arrow-linebreak: [ "off" ] */
+/* eslint function-paren-newline: "off" */
+/* eslint implicit-arrow-linebreak: "off" */
 
 // @ts-nocheck
 
@@ -57,8 +56,8 @@ define(['whatwg-fetch', 'promise-polyfill'], () => {
       }
     } catch (exception) {
       if (
-        exception != QUOTA_EXCEEDED_ERR &&
-        exception != NS_ERROR_DOM_QUOTA_REACHED
+        exception !== QUOTA_EXCEEDED_ERR &&
+        exception !== NS_ERROR_DOM_QUOTA_REACHED
       ) {
         throw exception;
       }
