@@ -89,7 +89,10 @@ found_pr = prs.find { |pr| pr.title == 'Updated project stats' && pr.user.login 
 
 if found_pr
   warn "There is a current PR open to update stats ##{found_pr.number} - review and merge that before we go again"
-  exit 0
+  return if result[:rate_limited]
+  warn 'This script is currently rate-limited by the GitHub API'
+  warn 'Marking as inconclusive to indicate that no further work will be done here'
+  return
 end
 
 projects = Project.find_in_directory(root_directory)
@@ -128,7 +131,7 @@ Dir.chdir(root_directory) do
 
   warn 'after changing git remote url'
 
-  clean = system('git diff --quiet > /dev/null')
+  clean = system('git diff --exit-code > /dev/null')
 
   warn 'after git diff'
 
@@ -141,6 +144,8 @@ Dir.chdir(root_directory) do
     warn 'after git commit'
     system("git push origin #{branch_name}")
     warn 'after git push'
+  else
+    exit 0
   end
 end
 
