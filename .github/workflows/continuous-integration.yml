@@ -23,7 +23,8 @@ jobs:
           node-version: '20'
       - name: npm install, lint, and test
         run: |
-          npm ci
+          npm ci 
+          bundle install
           npm run lint
           npm run prettier
           npm test
@@ -40,7 +41,7 @@ jobs:
           ruby-version: '3.2'
       - name: Build and test Jekyll site
         run: |
-          bundle install
+          
           bundle exec rubocop
           bundle exec jekyll build
           bundle exec ruby scripts/validate_data_files.rb

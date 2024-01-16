@@ -125,7 +125,8 @@ define(['whatwg-fetch', 'promise-polyfill'], () => {
   const yesterday = now - cacheTTL;
     const now = new Date();
 
-    const yesterday = now - 1000 * 60 * 60 * 24;
+    const now = new Date();
+    const yesterdayDate = now - 1000 * 60 * 60 * 24;
 
     if (cached && cached.date && new Date(cached.date) >= yesterday) {
       return Promise.resolve(cached.count);
