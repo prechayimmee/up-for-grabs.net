@@ -191,7 +191,7 @@ Dir.chdir(root_directory) do
 
   warn 'after git diff'
 
-  unless clean
+  if changed
     system("git checkout -b #{branch_name}")
     warn 'after git checkout'
     system('git add _data/projects/')
