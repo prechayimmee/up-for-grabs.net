@@ -125,7 +125,7 @@ define(['whatwg-fetch', 'promise-polyfill'], () => {
     const yesterday = now - 1000 * 60 * 60 * 24;
 
     if (cached && cached.date && new Date(cached.date) >= yesterday) {
-      return Promise.resolve(cached.count);
+      return Promise.resolve({count: cached.count, error: null});
     }
 
     const rateLimitResetAt = getValue(RateLimitResetAtKey);
@@ -170,7 +170,7 @@ define(['whatwg-fetch', 'promise-polyfill'], () => {
             if (response.status === 304) {
               // no content is returned in the 304 Not Modified response body
               const count = cached ? cached.count : 0;
-              resolve(count);
+              resolve({count, error: null});
               return;
             }
 
@@ -178,11 +178,29 @@ define(['whatwg-fetch', 'promise-polyfill'], () => {
 
             const rateLimitError = inspectRateLimitError(response);
             if (rateLimitError) {
+                  reject({count: null, error: rateLimitError});
+                  return;
               reject(rateLimitError);
               return;
             }
 
             response.json().then(
+            (json) => {
+              if (json && typeof json.length === 'number') {
+                const count = json.length;
+                setValue(ownerAndName, {
+                  count,
+                  etag,
+                  date: new Date(),
+                });
+
+                resolve(count);
+              }
+            },
+            (error) => {
+              reject({count: null, error});
+            }
+          );(
               (json) => {
                 reject(inspectGenericError(json, response));
               },

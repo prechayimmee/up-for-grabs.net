@@ -28,9 +28,9 @@ We've settled on some infrastructure choices that mean we don't need to worry
 about managing our own servers, and can save time on the manual work that comes
 with a project of this size:
 
-- [GitHub Actions](https://github.com/features/actions) is used to automate various tasks such as updating project statistics, checking project activity, and more. It runs every time you build or create a pull request to ensure the project is ready to be deployed.
+- [GitHub Actions](https://github.com/features/actions) is used to automate various tasks such as updating project statistics, checking project activity, and more. It also includes error handling and error messages for better debugging. It runs every time you build or create a pull request to ensure the project is ready to be deployed.
 - [Netlify](https://www.netlify.com/) hooks check every pull request to test the deployment and give reviewers a preview of the changes, so they don't have to download and verify the changes locally.
 - When you push a commit to the `gh-pages` branch, a deployment is started to publish the latest code to [GitHub Pages](https://pages.github.com/), which
   hosts the site
 - A GitHub Action, using the 'update_stats.rb' script, runs weekly to scan the project list and remove any projects that are no longer active by checking if they are still accessible via the GitHub API. This saves us from having to manually review projects for inactivity.
-- Every day, a GitHub Action, using the 'review_changes.rb' script, checks each project and updates the data files with the latest commit statistics. This ensures that the statistics are always up-to-date when the site is published, so visitors can easily see which projects have available issues.
+- Error handling and error messages are integrated into the GitHub Actions workflows to provide better debugging. Every day, a GitHub Action, using the 'review_changes.rb' script, checks each project and updates the data files with the latest commit statistics. This ensures that the statistics are always up-to-date when the site is published, so visitors can easily see which projects have available issues.

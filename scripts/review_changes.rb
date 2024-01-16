@@ -12,13 +12,24 @@ require 'open3'
 require 'up_for_grabs_tooling'
 
 def run_command(cmd)
-  stdout, stderr, status = Open3.capture3(cmd)
-
-  {
-    stdout:,
-    stderr:,
-    exit_code: status.exitstatus
-  }
+  begin
+    stdout, stderr, status = Open3.capture3(cmd)
+    
+    {
+      stdout: stdout,
+      stderr: stderr,
+      exit_code: status.exitstatus,
+      error_message: nil
+    }
+  rescue => e
+    error_message = e.message
+    {
+      stdout: nil,
+      stderr: nil,
+      exit_code: 1,
+      error_message: error_message
+    }
+  end
 end
 
 FOUND_PROJECT_FILES_HEADER = ":wave: I'm a robot checking the state of this pull request to save the human reviewers time. " \
@@ -266,7 +277,8 @@ raw_files = result[:stdout].split("\n")
 files = raw_files.map(&:chomp)
 
 if files.empty?
-  puts SKIP_PULL_REQUEST_MESSAGE
+  err_message = SKIP_PULL_REQUEST_MESSAGE
+  warn err_message
   return
 end
 
