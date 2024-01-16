@@ -166,6 +166,8 @@ define(['whatwg-fetch', 'promise-polyfill'], () => {
 
     return new Promise((resolve, reject) => {
       fetch(apiURL, settings).then(
+        // Add necessary logic to handle error or issue causing GitHub Actions run failure
+        
         (response) => {
           if (!response.ok) {
             if (response.status === 304) {
