@@ -118,7 +118,7 @@ define(['whatwg-fetch', 'promise-polyfill'], () => {
    *
    * @returns {number|string|null}
    */
-  function fetchIssueCount(ownerAndName, label) {
+  async function fetchIssueCount(ownerAndName, label) {
     const cached = getValue(ownerAndName);
     const now = new Date();
 
