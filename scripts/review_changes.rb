@@ -73,7 +73,7 @@ def generate_review_comment(dir, files)
   projects_without_valid_extensions = projects.reject { |p| ALLOWED_EXTENSIONS.include? File.extname(p.relative_path) }
 
   if projects_without_valid_extensions.any?
-    messages = ['#### Unexpected files found in project directory']
+    messages = ['#### Unexpected files and linting/prettier errors found in project directory']
     projects_without_valid_extensions.each do |p|
       messages << " - `#{p.relative_path}`"
     end
@@ -93,6 +93,7 @@ def generate_review_comment(dir, files)
     end
   else
     messages = projects.map { |p| review_project(p) }.map { |r| get_validation_message(r) }
+    linting_messages = projects.map { |p| check_lint_and_prettier_errors(p) }
   end
 
   markdown_body + messages.join("\n\n")
