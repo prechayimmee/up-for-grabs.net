@@ -5,7 +5,7 @@ the key parts of the Up-for-Grabs site and project.
 
 ## Displaying projects
 
-The main site is a Jekyll repository hosted on GitHub Pages, but it leverages
+The main site is a Jekyll repositorysitory hosted on GitHub Pages, but it leverages
 some neat features of Jekyll along the way.
 
 - We use [Data files](https://jekyllrb.com/docs/datafiles/) to represent the
@@ -28,7 +28,7 @@ We've settled on some infrastructure choices that mean we don't need to worry
 about managing our own servers, and can save time on the manual work that comes
 with a project of this size:
 
-- [GitHub Actions](https://github.com/features/actions) is used to automate various tasks such as updating project statistics, checking project activity, and more. It runs every time you build or create a pull request to ensure the project is ready to be deployed.
+- [GitHub Workflows](https://github.com/features/actions) is used to automate various tasks such as updating project statistics, checking project activity, and more. It runs every time you build or create a pull request to ensure the project is ready to be deployed.
 - [Netlify](https://www.netlify.com/) hooks check every pull request to test the deployment and give reviewers a preview of the changes, so they don't have to download and verify the changes locally.
 - When you push a commit to the `gh-pages` branch, a deployment is started to publish the latest code to [GitHub Pages](https://pages.github.com/), which
   hosts the site
