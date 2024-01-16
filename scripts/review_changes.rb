@@ -13,7 +13,9 @@ require 'up_for_grabs_tooling'
 
 def run_command(cmd)
   begin
-    stdout, stderr, status = Open3.capture3(cmd)
+    output = `#{cmd}`
+exit_code = $?.exitstatus
+error_message = $?.success? ? nil : 'An error occurred while running the command'
     
     {
       stdout: stdout,
@@ -96,7 +98,7 @@ def generate_review_comment(dir, files)
       messages << projects_with_errors.map { |result| get_validation_message(result) }
     end
   else
-    messages = projects.map { |p| review_project(p) }.map { |r| get_validation_message(r) }
+    messages = projects.map { |result| get_validation_message(result) }
   end
 
   markdown_body + messages.join("\n\n")
