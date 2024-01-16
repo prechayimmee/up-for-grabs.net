@@ -55,7 +55,7 @@ def get_validation_message(result)
     message = result[:tags_errors].map { |e| "> - #{e}" }.join "\n"
     "#### `#{path}` :x:\nI have some suggestions about the tags used in the project:\n\n#{message}"
   when 'link-url'
-    "#### `#{path}` :x:\nThe `upforgrabs.url` value #{result[:url]} is not a valid URL - please check and update the value."
+    "#### `#{path}` :x:\nI had some troubles parsing the project file, or there were fields that are missing that I need.\n\nHere's the details:\n#{message}
   when 'repository', 'label'
     "#### `#{path}` :x:\n#{result[:message]}"
   else
