@@ -15,8 +15,8 @@ def run_command(cmd)
   stdout, stderr, status = Open3.capture3(cmd)
 
   {
-    stdout:,
-    stderr:,
+    stdout: stdout,
+    stderr: stderr,
     exit_code: status.exitstatus
   }
 end
@@ -279,7 +279,7 @@ if files.empty?
 end
 
 result = run_command "git -C '#{dir}' checkout #{head_sha} --force"
-unless result[:exit_code].zero?
+unless result[:exit_code] == 0
   puts 'A problem occurred when trying to load this commit'
   return
 end
@@ -287,5 +287,7 @@ end
 markdown_body = generate_review_comment(dir, files)
 
 puts markdown_body
+
+exit result[:exit_code]
 
 exit 0
