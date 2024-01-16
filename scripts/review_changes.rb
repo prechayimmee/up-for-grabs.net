@@ -214,7 +214,7 @@ end
 
 def valid_url?(url)
   uri = URI.parse(url)
-  uri.is_a?(URI::HTTP) || uri.is_a?(URI::HTTPS)
+  uri.scheme == 'http' || uri.scheme == 'https'
 rescue URI::InvalidURIError
   false
 end
