@@ -219,9 +219,9 @@ rescue URI::InvalidURIError
   false
 end
 
-head_sha = ENV.fetch('HEAD_SHA', nil)
-base_sha = ENV.fetch('BASE_SHA', nil)
-git_remote_url = ENV.fetch('GIT_REMOTE_URL', nil)
+head_sha = ENV['HEAD_SHA'] || nil
+base_sha = ENV['BASE_SHA'] || nil
+git_remote_url = ENV['GIT_REMOTE_URL'] || nil
 dir = ENV.fetch('GITHUB_WORKSPACE', nil)
 
 range = "#{base_sha}...#{head_sha}"
