@@ -28,12 +28,12 @@ def update(project, apply_changes: false)
   end
 
   if result[:reason] == 'issues-disabled'
-    warn "The GitHub repository '#{project.github_owner_name_pair}' has issues disabled, and should be cleaned up with the next deprecation run."
+    logger.warn("The GitHub repository '#{project.github_owner_name_pair}' has issues disabled, and should be cleaned up with the next deprecation run.")
     return
   end
 
   if result[:reason] == 'error'
-    warn "An error occurred: #{result[:error]}"
+    logger.error("An error occurred: #{result[:error]}")
     return
   end
 
@@ -41,7 +41,7 @@ def update(project, apply_changes: false)
   label = obj['upforgrabs']['name']
 
   if result[:reason] == 'missing'
-    warn "The label '#{label}' for GitHub repository '#{project.github_owner_name_pair}' could not be found. Please ensure this points to a valid label used in the project."
+    logger.error("The label '#{label}' for GitHub repository '#{project.github_owner_name_pair}' could not be found. Please ensure this points to a valid label used in the project.")
     return
   end
 
