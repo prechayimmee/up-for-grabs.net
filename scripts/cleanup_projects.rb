@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'faraday'
 require 'safe_yaml'
 require 'uri'
 require 'octokit'
