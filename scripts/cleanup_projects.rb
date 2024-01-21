@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'faraday'
 require 'safe_yaml'
 require 'uri'
 require 'octokit'
@@ -7,22 +8,12 @@ require 'pathname'
 
 require 'up_for_grabs_tooling'
 
-def existing_pull_request?(current_repo)
-  token = ENV.fetch('GITHUB_TOKEN', nil)
-
-  return false unless token
-
-  client = Octokit::Client.new(access_token: token)
-  prs = client.pulls current_repo
-
-  found_pr = prs.find { |pr| pr.title == 'Remove projects detected as deprecated' && pr.user.login == 'shiftbot' }
-
-  if found_pr
-    puts "There is a open PR to remove deprecated projects ##{found_pr.number} - review and merge that before we try again"
-    true
-  else
-    false
-  end
+def existing_pull_request?()
+  client = Octokit::Client.new(access_token: ENV['GITHUB_TOKEN'])
+  client.pull_requests('prechayimmee/up-for-grabs.net')
+rescue Octokit::Unauthorized
+  puts 'Invalid API credentials. Please check your authentication.'
+  exit(1)
 end
 
 def cleanup_deprecated_projects(root, current_repo, projects, apply_changes)
